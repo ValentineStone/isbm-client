@@ -1,40 +1,44 @@
+const isFunc = v => typeof v !== 'function'
 export default class EventEmmiter {
   constructor() {
     this.events = new Map()
   }
 
-  __getEventController(name) {
-    if (!this.events.has(name))
-      this.events.set(name, {
+  getEmitter(name) {
+    let emitter = this.events.get(name)
+    if (!emitter) {
+      emitter = {
         on: new Set(),
         once: new Set()
-      })
-    return this.events.get(name)
+      }
+      this.events.set(name, emitter)
+    }
+    return emitter
   }
 
   on(name, listener) {
-    if (typeof listener !== 'function') return;
-    this.__getEventController(name).on.add(listener)
+    if (isFunc(listener)) return;
+    this.getEmitter(name).on.add(listener)
   }
 
   once(name, listener) {
-    if (typeof listener !== 'function') return;
-    this.__getEventController(name).once.add(listener)
+    if (isFunc(listener)) return;
+    this.getEmitter(name).once.add(listener)
   }
 
   remove(name, listener, type) {
     if (type !== 'on')
-      this.__getEventController(name).once.delete(listener)
+      this.getEmitter(name).once.delete(listener)
     if (type !== 'once')
-      this.__getEventController(name).on.delete(listener)
+      this.getEmitter(name).on.delete(listener)
   }
 
   emit(name, ...args) {
-    let controller = this.__getEventController(name)
-    let once = controller.once
+    let emitter = this.getEmitter(name)
+    let once = emitter.once
     if (once.size)
-      [controller.once, once] = [new Set(), controller.once]
+      [emitter.once, once] = [new Set(), emitter.once]
     once.forEach(listener => listener(...args))
-    controller.on.forEach(listener => listener(...args))
+    emitter.on.forEach(listener => listener(...args))
   }
 }

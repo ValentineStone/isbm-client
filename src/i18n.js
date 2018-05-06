@@ -122,7 +122,7 @@ class I18n extends EventEmmiter {
   translate(Component) {
     const i18nInstance = this
 
-    return class Translator extends React.Component {
+    const HOC = class extends React.Component {
       constructor() {
         super()
         this.forceUpdateOnTranslation = () =>
@@ -145,6 +145,10 @@ class I18n extends EventEmmiter {
         )
       }
     }
+    HOC.displayName = `Translated(${
+      Component.displayName || Component.name || 'Component'
+    })`
+    return HOC
   }
 
 }
