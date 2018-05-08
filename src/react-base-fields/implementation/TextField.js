@@ -1,6 +1,6 @@
 import React from 'react'
-import PrimitiveField from './base/PrimitiveField.js'
-import parentContext from './parentContext.js'
+import PrimitiveField from '../PrimitiveField.js'
+import contextify from '../contextify.js'
 
 class TextField extends PrimitiveField {
   constructor(props) {
@@ -30,10 +30,11 @@ implementation.Input = props => {
     )
 }
 implementation.Input.displayName =
-  'ObjectFieldImplementation.Input'
+  'TextFieldImplementation.Input'
 
 TextField.implementation = implementation
 
-export default parentContext.contextify({
-  consumer: true
+export default contextify({
+  consumesName: true,
+  consumesParent: true
 })(TextField)

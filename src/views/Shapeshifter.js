@@ -1,9 +1,7 @@
 import React from 'react'
 
 import Generic from './Generic.js'
-import Demo from './Demo.js'
 import Development from '/Development.js'
-import Calcuator from './Calculator.js'
 
 export default class ShapeshifterView extends React.PureComponent {
   render() {
@@ -15,9 +13,8 @@ export default class ShapeshifterView extends React.PureComponent {
       case 'warehouse':
       case 'tasks':
       case 'settings':
-        return <Generic pageName={pageName} />
       case 'calculator':
-        return <Calcuator />
+        return <Generic pageName={pageName} />
       case 'development':
       default:
         return <Development />

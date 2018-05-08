@@ -27,6 +27,7 @@ export default class ObjectField extends BaseField {
       </Implemetation.ChildList>
     )
   }
+
   onChildChange(_value, name, purge) {
     this.setState(prevState => {
       const value = { ...prevState.value }
@@ -34,9 +35,11 @@ export default class ObjectField extends BaseField {
         delete value[name]
       else
         value[name] = _value
+      this.handleValueChange(value)
       return { value }
     })
   }
+
   notifyOfChildDefaultValue(value, name) {
     // UNSAFE MUTATIONS
     this.state.value[name] = value

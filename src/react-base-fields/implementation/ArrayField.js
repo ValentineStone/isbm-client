@@ -1,6 +1,6 @@
 import React from 'react'
-import ArrayFieldBase from './base/ArrayField.js'
-import parentContext from './parentContext.js'
+import ArrayFieldBase from '../ArrayField.js'
+import contextify from '../contextify.js'
 
 class ArrayField extends ArrayFieldBase { }
 
@@ -37,7 +37,9 @@ implementation.ChildListItem.displayName =
 
 ArrayField.implementation = implementation
 
-export default parentContext.contextify({
-  consumer: true,
-  provider: true
+export default contextify({
+  providesParent: true,
+  providesNamePerChild: true,
+  consumesName: true,
+  consumesParent: true
 })(ArrayField)

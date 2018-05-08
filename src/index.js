@@ -7,7 +7,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.js'
 
-ReactDOM.render(
-  <App />,
-  document.querySelector('#app')
-)
+import app from '/application.js'
+import { createI18nInstance } from '/react-base-i18n.js'
+import { importLang } from '/i18n/langs.js'
+
+const i18nInstace = createI18nInstance({ importLang, defaultLang: 'en' })
+i18nInstace.setLang(app.getLang('en'), () => {
+  ReactDOM.render(<App />, document.querySelector('#app'))
+})

@@ -24,25 +24,22 @@ export default class BaseField extends React.PureComponent {
     else
       this.state = { value: this.derivedDefault }
 
-    this.onValueChange = this.onValueChange.bind(this)
+    this.handleValueChange = this.handleValueChange.bind(this)
     this.changeValueDirectly = this.changeValueDirectly.bind(this)
   }
 
-  onValueChange() {
+  handleValueChange(value) {
     if (this.props.parent)
-      this.props.parent.onChildChange(this.state.value, this.props.name)
+      this.props.parent.onChildChange(value, this.props.name)
     if (this.props.onChange)
-      this.props.onChange(this.state.value)
+      this.props.onChange(value)
   }
   changeValueDirectly(value) {
+    this.handleValueChange(value)
     this.setState({ value })
   }
   componentWillUnmount() {
     if (this.props.parent)
       this.props.parent.onChildChange(undefined, this.props.name, true)
-  }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.value !== prevState.value)
-      this.onValueChange()
   }
 }

@@ -7,7 +7,7 @@ import Select from 'material-ui/Select'
 import { InputLabel, InputAdornment } from 'material-ui/Input'
 import { withStyles } from 'material-ui/styles'
 
-import I18n from '/i18n.js'
+import { withTranslation } from '/react-base-i18n.js'
 
 class Calculator extends React.PureComponent {
   constructor(props) {
@@ -49,10 +49,10 @@ class Calculator extends React.PureComponent {
             key={name}
             fullWidth
             helperText=" "
-            label={I18n.t(props.label)}
+            label={i18n.t(props.label)}
             onInput={e => this.calculate(this.value[name] = +e.target.value * props.scale)}
             defaultValue={props.default === undefined ? undefined : String(props.default)}
-            InputProps={{ endAdornment: props.units && <InputAdornment>{I18n.t(props.units)}</InputAdornment> }}
+            InputProps={{ endAdornment: props.units && <InputAdornment>{i18n.t(props.units)}</InputAdornment> }}
           />
         case 'boolean':
           return <FormControl
@@ -60,7 +60,7 @@ class Calculator extends React.PureComponent {
             fullWidth
           >
             <FormControlLabel
-              label={I18n.t(props.label)}
+              label={i18n.t(props.label)}
               control={
                 <Checkbox
                   color="primary"
@@ -74,13 +74,13 @@ class Calculator extends React.PureComponent {
             key={name}
             fullWidth
           >
-            <InputLabel>{I18n.t(props.label)}</InputLabel>
+            <InputLabel>{i18n.t(props.label)}</InputLabel>
             <Select
               value={this.value[name]}
               onChange={e => this.calculate(this.value[name] = e.target.value)}
             >
               {Object.entries(props.options).map(([value, label]) =>
-                <MenuItem key={value} value={value}>{I18n.t(label)}</MenuItem>)
+                <MenuItem key={value} value={value}>{i18n.t(label)}</MenuItem>)
               }
             </Select>
             <FormHelperText>{' '}</FormHelperText>
@@ -93,9 +93,9 @@ class Calculator extends React.PureComponent {
             key={name}
             fullWidth
             helperText=" "
-            label={I18n.t(props.label)}
+            label={i18n.t(props.label)}
             value={this.value[name] === undefined ? '' : (this.value[name] * props.scale).toFixed(2)}
-            InputProps={{ endAdornment: props.units && <InputAdornment>{I18n.t(props.units)}</InputAdornment> }}
+            InputProps={{ endAdornment: props.units && <InputAdornment>{i18n.t(props.units)}</InputAdornment> }}
           />
       }
   }
@@ -106,4 +106,4 @@ class Calculator extends React.PureComponent {
   }
 }
 
-export default I18n.translate(Calculator)
+export default withTranslation()(Calculator)

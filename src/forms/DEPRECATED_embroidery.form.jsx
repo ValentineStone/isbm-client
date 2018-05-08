@@ -1,5 +1,6 @@
 import server from '/server.js'
-import I18n from '/i18n.js'
+import { getI18nInstance } from '/react-base-i18n.js'
+const i18n = getI18nInstance()
 
 export default <>
   <number name="workWidth" label="Work width" suffix="cm" transform={v => v / 100} />
@@ -21,7 +22,7 @@ export default <>
     transform={value =>
       typeof value === 'number'
         ? value.toFixed(2)
-        : I18n.t('Fill out the form')
+        : i18n.t('Fill out the form')
     }
     label="Price"
     suffix="rub"

@@ -1,0 +1,189 @@
+import React from 'react'
+
+import EventEmmiter from './tiny-events.js'
+
+const getDeep = (object, path) => {
+  let value = object
+  for (
+    let i = 0;
+    i < path.length
+    && value
+    && typeof value === 'object';
+    i++
+  )
+    value = value[path[i]]
+  return value
+}
+
+const intertwine = (arr1, arr2) => {
+  let intertwinedLength = arr1.length + arr2.length
+  let intertwined = new Array(intertwinedLength)
+  for (let i = 0, j = 0; i < arr2.length; j += 2, i++) {
+    intertwined[j] = arr1[i]
+    intertwined[j + 1] = arr2[i]
+  }
+  intertwined[intertwinedLength - 1] = arr1[arr1.length - 1]
+  return intertwined.join('')
+}
+
+const callAsync = async callback => callback()
+
+export default class I18n extends EventEmmiter {
+
+  constructor({
+    importLang,
+    defaultLang,
+    initialLang,
+    templateLiteralReplaceRegex = /{(.*?)}/g,
+    nestedPathSeparator = /\./,
+    allowNestedPaths = false,
+    fallbackOnDefaultLang = false,
+    prefixUnknownPaths = false,
+    setHTMLLangAttribute = true,
+    onDefaultLoaded
+  }) {
+    super()
+
+    this.getTemplateLiteralTranslation =
+      this.getTemplateLiteralTranslation.bind(this)
+
+    this.importLang = importLang
+    this.defaultLang = defaultLang
+    this.templateLiteralReplaceRegex = templateLiteralReplaceRegex
+    this.nestedPathSeparator = nestedPathSeparator
+    this.allowNestedPaths = allowNestedPaths
+    this.fallbackOnDefaultLang = fallbackOnDefaultLang
+    this.prefixUnknownPaths = prefixUnknownPaths
+    this.setHTMLLangAttribute = setHTMLLangAttribute
+    this.defaultLangLoaded = false
+
+    this.setLangQueue = Promise.resolve()
+
+    this.defaultLang = defaultLang
+    this.defaultModule = undefined
+    this.lang = undefined
+    this.module = undefined
+    this.modules = {}
+
+    this.setLang(this.defaultLang, onDefaultLoaded)
+  }
+
+  setLang(lang, callback) {
+    this.setLangQueue = this.setLangQueue
+      .then(() => this.importLang(lang))
+      .then(module => {
+        if (lang !== this.lang) {
+          this.modules[lang] = module
+
+          const prevLang = this.lang
+          this.lang = lang
+          this.module = this.modules[lang]
+
+          if (this.setHTMLLangAttribute)
+            document.documentElement.setAttribute('lang', lang)
+
+          callAsync(() => this.emit('translate', lang, prevLang))
+        }
+        if (typeof callback === 'function')
+          callAsync(callback)
+      })
+  }
+
+  getTemplateLiteralTranslation(string) {
+    return string.replace(
+      this.templateLiteralReplaceRegex,
+      (match, path) => this.getTranslation(path)
+    )
+  }
+
+  needsFallbackTranslation(value) {
+    return (
+      value === undefined
+      && this.fallbackOnDefaultLang
+      && this.lang !== this.defaultLang
+    )
+  }
+
+  getTranslation(path) {
+    let translated
+    if (this.allowNestedPaths) {
+      let splitPath = path.split(this.nestedPathSeparator)
+      translated = getDeep(this.module, splitPath)
+      if (this.needsFallbackTranslation(translated))
+        translated = getDeep(this.defaultModule, splitPath)
+    }
+    else {
+      translated = this.module[path]
+      if (this.needsFallbackTranslation(translated))
+        translated = this.defaultModule[path]
+    }
+
+    if (translated === undefined)
+      if (this.prefixUnknownPaths)
+        translated = this.lang + ':' + path
+      else
+        translated = path
+
+    return translated
+  }
+
+  t(strings, ...args) {
+    if (args.length > 0)
+      return intertwine(
+        strings.map(this.getTemplateLiteralTranslation),
+        args
+      )
+    else if (Array.isArray(strings))
+      if (strings[1] === true)
+        return this.getTemplateLiteralTranslation(strings[0])
+      else
+        return this.getTranslation(strings[0])
+    else
+      return this.getTranslation(strings)
+  }
+
+}
+
+export const createI18nInstance = options => I18n.instance = new I18n(options)
+//export const getI18nInstance = () => I18n.instance
+
+export const t = (...args) => I18n.instance.t(...args)
+
+export const setLang = lang => I18n.instance.setLang(lang)
+
+export const withTranslation = i18nInstance => Component => {
+  class WithTranslation extends React.Component {
+    constructor() {
+      super()
+      this.state = {}
+      this.onTranslate = this.onTranslate.bind(this)
+      this.i18nInstance = i18nInstance || I18n.instance
+    }
+    onTranslate(lang, prevLang) {
+      this.setState(prevState => {
+        if (prevState.lang === lang)
+          return null
+        else
+          return { lang }
+      })
+    }
+    componentDidMount() {
+      this.i18nInstance.on('translate', this.onTranslate)
+    }
+    componentWillUnmount() {
+      this.i18nInstance.remove('translate', this.onTranslate)
+    }
+    render() {
+      return (
+        <Component
+          {...this.props}
+          lang={this.state.lang}
+          i18n={this.i18nInstance}
+        />
+      )
+    }
+  }
+  WithTranslation.displayName =
+    `WithTranslation(${Component.displayName || Component.name || 'Component'})`
+  return WithTranslation
+}

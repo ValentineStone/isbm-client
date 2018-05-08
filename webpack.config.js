@@ -47,6 +47,10 @@ module.exports = {
           charsAsChildren: true
         }
       },
+
+
+      // ------------- DEPRECATED USE CASE -------------
+      /*
       {
         test: /\.jsx$/,
         include: srcFolder,
@@ -63,7 +67,11 @@ module.exports = {
             }]
           ]
         }
-      },
+      }
+      */
+      // ------------- DEPRECATED USE CASE -------------
+
+      
     ]
   },
   plugins: [

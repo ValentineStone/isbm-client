@@ -1,12 +1,28 @@
 import React from 'react'
 import BaseField from './BaseField.js'
 
+let uniqueKeyCounter = 0
+
 export default class ArrayField extends BaseField {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const stateChange = BaseField.getDerivedStateFromProps(nextProps, prevState)
+    if (stateChange)
+      stateChange.fields = ArrayField.generateFieldsForValue(stateChange.value)
+    return stateChange
+  }
+
+  static generateFieldsForValue(value) {
+    return value.map(() => ArrayField.getUniqueKey())
+  }
+
+  static getUniqueKey() {
+    return uniqueKeyCounter++
+  }
+
   constructor(props) {
     super(props, { defaultValue: [] })
 
-    this.keyCounter = 0
-    this.state.fields = this.state.value.map(() => this.getUniqueKey())
+    this.state.fields = ArrayField.generateFieldsForValue(this.state.value)
 
     this.renderChild = this.renderChild.bind(this)
     this.addField = this.addField.bind(this)
@@ -15,11 +31,23 @@ export default class ArrayField extends BaseField {
     this.moveFieldDown = this.moveFieldDown.bind(this)
   }
 
+  changeValueDirectly(value) {
+    this.setState(prevState => {
+      if (prevState.value !== value) {
+        this.handleValueChange(value)
+        return { value, fields: ArrayField.generateFieldsForValue(value) }
+      }
+      else
+        return null
+    })
+  }
+
   render() {
     const Implementation = this.constructor.implementation
 
     const { children, onChange, name, ...implementationProps } = this.props
     implementationProps.parent = this
+    implementationProps.fieldCount = this.state.fields.length
 
     return (
       <Implementation.ChildList {...implementationProps}>
@@ -38,6 +66,7 @@ export default class ArrayField extends BaseField {
       if (index >= 0) {
         const value = prevState.value.slice()
         value.splice(index, 1, _value)
+        this.handleValueChange(value)
         return { value }
       }
       else
@@ -58,11 +87,12 @@ export default class ArrayField extends BaseField {
 
   addField() {
     this.setState(prevState => {
-      const name = this.getUniqueKey()
+      const name = ArrayField.getUniqueKey()
       const value = prevState.value.slice()
       value.push(undefined)
       const fields = prevState.fields.slice()
       fields.push(name)
+      this.handleValueChange(value)
       return { fields, value }
     })
   }
@@ -80,6 +110,7 @@ export default class ArrayField extends BaseField {
         const value = prevState.value.slice()
         value[index] = prevState.value[index - 1]
         value[index - 1] = prevState.value[index]
+        this.handleValueChange(value)
         return { fields, value }
       }
       else
@@ -101,6 +132,7 @@ export default class ArrayField extends BaseField {
         const value = prevState.value.slice()
         value[index] = prevState.value[index + 1]
         value[index + 1] = prevState.value[index]
+        this.handleValueChange(value)
         return { fields, value }
       }
       else
@@ -116,6 +148,7 @@ export default class ArrayField extends BaseField {
         value.splice(index, 1)
         const fields = prevState.fields.slice()
         fields.splice(index, 1)
+        this.handleValueChange(value)
         return { fields, value }
       }
       else
@@ -131,8 +164,7 @@ export default class ArrayField extends BaseField {
     if (typeof children === 'function')
       fieldElement = children(name, this)
     else
-      fieldElement =
-        React.cloneElement(children, { name: index, parent: this })
+      fieldElement = children //React.cloneElement(children)
 
     const { children: ignored, onChange, ...implementationProps } =
       fieldElement.props
@@ -141,7 +173,7 @@ export default class ArrayField extends BaseField {
     return (
       <Implementation.ChildListItem
         {...implementationProps}
-        key={String(name)}
+        key={name}
         name={name}
         index={index}
         isLast={index === array.length - 1}
@@ -154,9 +186,5 @@ export default class ArrayField extends BaseField {
 
   getChildFieldValue(name) {
     return this.state.value[this.state.fields.indexOf(name)]
-  }
-
-  getUniqueKey() {
-    return this.keyCounter++
   }
 }

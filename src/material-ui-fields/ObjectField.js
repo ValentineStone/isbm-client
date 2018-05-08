@@ -1,6 +1,6 @@
 import React from 'react'
-import ObjectFieldBase from './base/ObjectField.js'
-import parentContext from './parentContext.js'
+import ObjectFieldBase from '/react-base-fields/ObjectField.js'
+import contextify from '/react-base-fields/contextify.js'
 
 class ObjectField extends ObjectFieldBase { }
 
@@ -20,7 +20,9 @@ implementation.ChildListItem.displayName =
 
 ObjectField.implementation = implementation
 
-export default parentContext.contextify({
-  consumer: true,
-  provider: true
+export default contextify({
+  providesParent: true,
+  forcesNameOverride: true,
+  consumesName: true,
+  consumesParent: true
 })(ObjectField)
