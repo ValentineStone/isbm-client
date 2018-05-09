@@ -26,8 +26,6 @@ const intertwine = (arr1, arr2) => {
   return intertwined.join('')
 }
 
-const callAsync = async callback => callback()
-
 export default class I18n extends EventEmmiter {
 
   constructor({
@@ -65,11 +63,11 @@ export default class I18n extends EventEmmiter {
     this.module = undefined
     this.modules = {}
 
-    this.setLang(this.defaultLang, onDefaultLoaded)
+    this.setLang(this.defaultLang).then(onDefaultLoaded)
   }
 
-  setLang(lang, callback) {
-    this.setLangQueue = this.setLangQueue
+  setLang(lang) {
+    return this.setLangQueue = this.setLangQueue
       .then(() => this.importLang(lang))
       .then(module => {
         if (lang !== this.lang) {
@@ -82,11 +80,10 @@ export default class I18n extends EventEmmiter {
           if (this.setHTMLLangAttribute)
             document.documentElement.setAttribute('lang', lang)
 
-          callAsync(() => this.emit('translate', lang, prevLang))
+          return prevLang
         }
-        if (typeof callback === 'function')
-          callAsync(callback)
       })
+      .then(prevLang => prevLang && this.emit('translate', lang, prevLang))
   }
 
   getTemplateLiteralTranslation(string) {
@@ -178,7 +175,6 @@ export const withTranslation = i18nInstance => Component => {
         <Component
           {...this.props}
           lang={this.state.lang}
-          i18n={this.i18nInstance}
         />
       )
     }

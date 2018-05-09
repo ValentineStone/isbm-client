@@ -23,7 +23,7 @@ import CssBaseline from 'material-ui/CssBaseline'
 
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 
-import { withTranslation } from '/react-base-i18n.js'
+import { withTranslation, t, setLang } from '/react-base-i18n.js'
 
 import ShapeshifterView from './views/Shapeshifter.js'
 import themes from './themes.js'
@@ -69,7 +69,7 @@ class App extends React.PureComponent {
       this.lang = 'ru'
     else
       this.lang = 'en'
-    this.props.i18n.setLang(this.lang)
+    setLang(this.lang)
     store.set('lang', this.lang)
   }
   render() {
@@ -80,7 +80,7 @@ class App extends React.PureComponent {
         <CssBaseline />
         <BrowserRouter>
           <>
-            {ReactDOM.createPortal(this.props.i18n.t`IS Framing Workshop`, titleElement)}
+            {ReactDOM.createPortal(t`app.name`, titleElement)}
             <AppBar
               position="sticky"
               color="default"
@@ -89,7 +89,7 @@ class App extends React.PureComponent {
                 <Typography
                   style={{ flex: 1 }}
                   variant="title">
-                  {this.props.i18n.t`IS Framing Workshop`}
+                  {t`app.name`}
                 </Typography>
                 <MenuItem icon={TranslateIcon} action={this.toggleLang} />
                 <MenuItem icon={InvertColorsIcon} action={this.toggleTheme} />

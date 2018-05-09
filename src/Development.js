@@ -8,7 +8,7 @@ import ArrayField from '/material-ui-fields/ArrayField.js'
 import ObjectField from '/material-ui-fields/ObjectField.js'
 import MasterField from '/material-ui-fields/MasterField.js'
 
-import { withTranslation } from '/react-base-i18n.js'
+import { withTranslation, t } from '/react-base-i18n.js'
 
 import server from '/server.js'
 
@@ -18,22 +18,10 @@ class DevelopmentView extends React.PureComponent {
     this.state = {}
   }
 
-  /*
-  componentDidMount() {
-    setTimeout(() => {
-      const count = Math.round(Math.random() * 2 + 1)
-      const array = new Array(count)
-      for (let i = 0; i < count; i++)
-        array[i] = { a: Math.random() }
-      this.setState({ formValue: array })
-    })
-  }
-  */
-
   render() {
     return (
       <MasterField value={this.state.formValue} onChange={console.log}>
-        <ArrayField>
+        <ArrayField addLabel={t`Add user`}>
           <ObjectField>
             <TextField name="a" />
           </ObjectField>

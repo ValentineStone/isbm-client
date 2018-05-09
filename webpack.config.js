@@ -1,10 +1,11 @@
 const path = require('path')
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 
-const srcFolder = path.join(__dirname, 'src')
+const srcDir = path.join(__dirname, 'src')
+const node_modulesDir = path.join(__dirname, 'node_modules')
 
 module.exports = {
-  entry: path.join(srcFolder, 'index.js'),
+  entry: path.join(srcDir, 'index.js'),
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'index.js'
@@ -17,29 +18,32 @@ module.exports = {
     }
   },
   resolve: {
-    alias: { '': srcFolder }
+    alias: {
+      '': srcDir,
+      '/': node_modulesDir
+    }
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: srcFolder
+        include: srcDir
       },
       {
         test: /\.json5$/,
         loader: 'json5-loader',
-        include: srcFolder
+        include: srcDir
       },
       {
         test: /\.ini$/,
         loader: 'ini-loader',
-        include: srcFolder
+        include: srcDir
       },
       {
         test: /\.xml$/,
         loader: 'xml-loader',
-        include: srcFolder,
+        include: srcDir,
         options: {
           attrkey: 'attributes',
           childkey: 'children',
@@ -53,7 +57,7 @@ module.exports = {
       /*
       {
         test: /\.jsx$/,
-        include: srcFolder,
+        include: srcDir,
         loader: 'babel-loader',
         options: {
           "plugins": [
