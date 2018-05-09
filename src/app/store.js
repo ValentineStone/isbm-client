@@ -12,4 +12,6 @@ const store = {
   }
 }
 
+store.setIfUnset = store.getOrSet
+
 export default store

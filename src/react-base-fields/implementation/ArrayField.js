@@ -1,6 +1,6 @@
 import React from 'react'
-import ArrayFieldBase from '../ArrayField.js'
-import contextify from '../contextify.js'
+import ArrayFieldBase from '../ArrayField'
+import contextify from '../contextify'
 
 class ArrayField extends ArrayFieldBase { }
 

@@ -3,7 +3,7 @@ import TextField from 'material-ui/TextField'
 import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 
-import Wiki from '/components/Wiki.js'
+import Wiki from '/components/Wiki'
 
 class DemoView extends React.PureComponent {
   constructor() {

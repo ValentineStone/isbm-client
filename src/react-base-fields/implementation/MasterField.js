@@ -1,6 +1,6 @@
 import React from 'react'
-import MasterField from '../MasterField.js'
-import contextify from '../contextify.js'
+import MasterField from '../MasterField'
+import contextify from '../contextify'
 
 export default contextify({
   providesParent: true,

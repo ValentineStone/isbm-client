@@ -1,6 +1,6 @@
 import React from 'react'
-import ArrayFieldBase from '/react-base-fields/ArrayField.js'
-import contextify from '/react-base-fields/contextify.js'
+import ArrayFieldBase from '/react-base-fields/ArrayField'
+import contextify from '/react-base-fields/contextify'
 
 import List, { ListItem } from 'material-ui/List'
 import IconButton from 'material-ui/IconButton'

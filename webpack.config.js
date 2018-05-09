@@ -18,10 +18,7 @@ module.exports = {
     }
   },
   resolve: {
-    alias: {
-      '': srcDir,
-      '/': node_modulesDir
-    }
+    alias: { '': srcDir }
   },
   module: {
     rules: [
@@ -75,7 +72,7 @@ module.exports = {
       */
       // ------------- DEPRECATED USE CASE -------------
 
-      
+
     ]
   },
   plugins: [

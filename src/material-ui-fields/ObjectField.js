@@ -1,6 +1,6 @@
 import React from 'react'
-import ObjectFieldBase from '/react-base-fields/ObjectField.js'
-import contextify from '/react-base-fields/contextify.js'
+import ObjectFieldBase from '/react-base-fields/ObjectField'
+import contextify from '/react-base-fields/contextify'
 
 class ObjectField extends ObjectFieldBase { }
 

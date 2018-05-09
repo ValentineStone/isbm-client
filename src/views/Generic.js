@@ -1,7 +1,7 @@
 import React from 'react'
 import Typography from 'material-ui/Typography'
 
-import { withTranslation, t } from '/react-base-i18n.js'
+import { withTranslation, t } from '/app/i18n'
 
 class GenericView extends React.PureComponent {
   constructor() {

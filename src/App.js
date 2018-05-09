@@ -1,5 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+
+import app from '/app'
+
+import { MuiThemeProvider } from 'material-ui/styles'
+import CssBaseline from 'material-ui/CssBaseline'
+
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
@@ -18,17 +24,10 @@ import CropOriginalIcon from 'material-ui-icons/CropOriginal'
 import AccountCircleIcon from 'material-ui-icons/AccountCircle'
 import AttachMoneyIcon from 'material-ui-icons/AttachMoney'
 
-import { MuiThemeProvider } from 'material-ui/styles'
-import CssBaseline from 'material-ui/CssBaseline'
-
 import { BrowserRouter, Link, Route } from 'react-router-dom'
 
-import { withTranslation, t, setLang } from '/react-base-i18n.js'
-
-import ShapeshifterView from './views/Shapeshifter.js'
-import themes from './themes.js'
-
-import store from '/store.js'
+import { withTranslation, t } from '/app/i18n'
+import ShapeshifterView from '/views/Shapeshifter'
 
 const titleElement = document.head.querySelector('title')
 
@@ -48,35 +47,18 @@ const MenuItem = ({ icon: Icon, action, to }) => {
 class App extends React.PureComponent {
   constructor() {
     super()
-    this.toggleTheme = this.toggleTheme.bind(this)
-    this.toggleLang = this.toggleLang.bind(this)
-
-    this.theme = store.getOrSet('theme', 'light')
-    this.lang = store.getOrSet('lang', 'en')
-
-    this.state = { theme: this.theme }
+    this.state = { theme: app.getTheme() }
+    this.onThemeChange = theme => this.setState({ theme })
   }
-  toggleTheme() {
-    if (this.theme === 'dark')
-      this.theme = 'light'
-    else
-      this.theme = 'dark'
-    store.set('theme', this.theme)
-    this.setState({ theme: this.theme })
+  componentDidMount() {
+    app.on('themechange', this.onThemeChange)
   }
-  toggleLang() {
-    if (this.lang === 'en')
-      this.lang = 'ru'
-    else
-      this.lang = 'en'
-    setLang(this.lang)
-    store.set('lang', this.lang)
+  componentWillUnmount() {
+    app.off('themechange', this.onThemeChange)
   }
   render() {
     return (
-      <MuiThemeProvider
-        theme={this.state.theme === 'dark' ? themes.dark : themes.light}
-      >
+      <MuiThemeProvider theme={this.state.theme}>
         <CssBaseline />
         <BrowserRouter>
           <>
@@ -84,15 +66,17 @@ class App extends React.PureComponent {
             <AppBar
               position="sticky"
               color="default"
-              style={{ opacity: .95 }}>
+              style={{ opacity: .95 }}
+            >
               <Toolbar>
                 <Typography
                   style={{ flex: 1 }}
-                  variant="title">
+                  variant="title"
+                >
                   {t`app.name`}
                 </Typography>
-                <MenuItem icon={TranslateIcon} action={this.toggleLang} />
-                <MenuItem icon={InvertColorsIcon} action={this.toggleTheme} />
+                <MenuItem icon={TranslateIcon} action={app.toggleLang} />
+                <MenuItem icon={InvertColorsIcon} action={app.toggleTheme} />
                 <MenuItem icon={AttachMoneyIcon} to="calculator" />
               </Toolbar>
             </AppBar>

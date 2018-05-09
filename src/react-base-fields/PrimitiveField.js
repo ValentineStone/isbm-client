@@ -1,5 +1,5 @@
 import React from 'react'
-import BaseField from './BaseField.js'
+import BaseField from './BaseField'
 
 export default class PrimitiveField extends BaseField {
   constructor(props, options) {

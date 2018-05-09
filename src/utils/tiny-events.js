@@ -1,7 +1,9 @@
-const isFunc = v => typeof v !== 'function'
+const isFunc = v => typeof v === 'function'
+const listenerTypeError = 'The "listener" argument must be of type Function'
 export default class EventEmmiter {
   constructor() {
     this.events = new Map()
+    this.off = this.remove
   }
 
   getEmitter(name) {
@@ -17,12 +19,14 @@ export default class EventEmmiter {
   }
 
   on(name, listener) {
-    if (isFunc(listener)) return;
+    if (!isFunc(listener))
+      throw new TypeError(listenerTypeError)
     this.getEmitter(name).on.add(listener)
   }
 
   once(name, listener) {
-    if (isFunc(listener)) return;
+    if (!isFunc(listener))
+      throw new TypeError(listenerTypeError)
     this.getEmitter(name).once.add(listener)
   }
 

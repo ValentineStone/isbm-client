@@ -1,6 +1,6 @@
 import React from 'react'
 
-import EventEmmiter from './tiny-events.js'
+import EventEmmiter from '/utils/tiny-events'
 
 const getDeep = (object, path) => {
   let value = object
@@ -42,9 +42,6 @@ export default class I18n extends EventEmmiter {
   }) {
     super()
 
-    this.getTemplateLiteralTranslation =
-      this.getTemplateLiteralTranslation.bind(this)
-
     this.importLang = importLang
     this.defaultLang = defaultLang
     this.templateLiteralReplaceRegex = templateLiteralReplaceRegex
@@ -62,6 +59,10 @@ export default class I18n extends EventEmmiter {
     this.lang = undefined
     this.module = undefined
     this.modules = {}
+
+    this.t = this.t.bind(this)
+    this.getTemplateLiteralTranslation =
+      this.getTemplateLiteralTranslation.bind(this)
 
     this.setLang(this.defaultLang).then(onDefaultLoaded)
   }

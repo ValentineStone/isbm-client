@@ -4,10 +4,9 @@ import Paper from 'material-ui/Paper'
 import { LinearProgress } from 'material-ui/Progress'
 import { MuiThemeProvider } from 'material-ui/styles'
 
-import { getI18nInstance } from '/react-base-i18n.js'
-const i18n = getI18nInstance()
+import i18n, { withTranslation, t } from '/app/i18n'
 
-import themes from '/themes.js'
+import themes from '/themes'
 
 class Wiki extends React.PureComponent {
   constructor(props) {

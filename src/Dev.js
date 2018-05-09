@@ -1,16 +1,14 @@
 import React from 'react'
 import Paper from 'material-ui/Paper'
 import Button from 'material-ui/Button'
-import Inspector from '/components/Inspector.js'
+import Inspector from '/components/Inspector'
 
-import TextField from '/material-ui-fields/TextField.js'
-import ArrayField from '/material-ui-fields/ArrayField.js'
-import ObjectField from '/material-ui-fields/ObjectField.js'
-import MasterField from '/material-ui-fields/MasterField.js'
+import TextField from '/material-ui-fields/TextField'
+import ArrayField from '/material-ui-fields/ArrayField'
+import ObjectField from '/material-ui-fields/ObjectField'
+import MasterField from '/material-ui-fields/MasterField'
 
-import { withTranslation, t } from '/react-base-i18n.js'
-
-import server from '/server.js'
+import { withTranslation, t } from '/app/i18n'
 
 class DevelopmentView extends React.PureComponent {
   constructor() {
@@ -20,7 +18,7 @@ class DevelopmentView extends React.PureComponent {
 
   render() {
     return (
-      <MasterField value={this.state.formValue} onChange={console.log}>
+      <MasterField value={this.state.formValue}>
         <ArrayField addLabel={t`Add user`}>
           <ObjectField>
             <TextField name="a" />

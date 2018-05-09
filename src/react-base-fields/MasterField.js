@@ -1,5 +1,5 @@
 import React from 'react'
-import { getNextChangeNumber } from './BaseField.js'
+import { getNextChangeNumber } from './BaseField'
 
 export default class MasterField extends React.PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {

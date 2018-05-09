@@ -1,6 +1,6 @@
 import React from 'react'
-import PrimitiveField from '../PrimitiveField.js'
-import contextify from '../contextify.js'
+import PrimitiveField from '../PrimitiveField'
+import contextify from '../contextify'
 
 class TextField extends PrimitiveField {
   constructor(props) {

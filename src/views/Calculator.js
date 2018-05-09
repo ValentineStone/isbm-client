@@ -1,6 +1,6 @@
 import React from 'react'
 import Paper from 'material-ui/Paper'
-import Calcuator from '/components/Calculator.js'
+import Calcuator from '/components/Calculator'
 import embroideryCalculatorModel from '/forms/embroidery.jsx'
 
 class CalculatorView extends React.PureComponent {

@@ -1,5 +1,5 @@
 import React from 'react'
-import BaseField, { getNextChangeNumber } from './BaseField.js'
+import BaseField, { getNextChangeNumber } from './BaseField'
 
 export default class ObjectField extends BaseField {
 
