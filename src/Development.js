@@ -18,19 +18,17 @@ class DevelopmentView extends React.PureComponent {
     this.state = {}
   }
 
+  /*
   componentDidMount() {
-    setInterval(() => {
+    setTimeout(() => {
       const count = Math.round(Math.random() * 2 + 1)
       const array = new Array(count)
       for (let i = 0; i < count; i++)
-        array[i] = { b: Math.random() }
+        array[i] = { a: Math.random() }
       this.setState({ formValue: array })
-    }, 1000)
+    })
   }
-
-  onChange(value) {
-    console.log('console.log =', JSON.stringify(value, null, 2))
-  }
+  */
 
   render() {
     return (

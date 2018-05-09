@@ -1,5 +1,5 @@
 import React from 'react'
-import BaseField, { getNextChangeNumber } from './BaseField.js'
+import BaseField from './BaseField.js'
 
 let uniqueKeyCounter = 0
 
@@ -34,11 +34,8 @@ export default class ArrayField extends BaseField {
   changeValueDirectly(value) {
     this.setState(prevState => {
       if (prevState.value !== value) {
-        return {
-          value,
-          fields: ArrayField.generateFieldsForValue(value),
-          changeNumber: getNextChangeNumber()
-        }
+        this.handleValueChange(value)
+        return { value, fields: ArrayField.generateFieldsForValue(value) }
       }
       else
         return null
@@ -69,7 +66,8 @@ export default class ArrayField extends BaseField {
       if (index >= 0) {
         const value = prevState.value.slice()
         value.splice(index, 1, _value)
-        return { value, changeNumber: getNextChangeNumber() }
+        this.handleValueChange(value)
+        return { value }
       }
       else
         return null
@@ -94,7 +92,8 @@ export default class ArrayField extends BaseField {
       value.push(undefined)
       const fields = prevState.fields.slice()
       fields.push(name)
-      return { fields, value, changeNumber: getNextChangeNumber() }
+      this.handleValueChange(value)
+      return { fields, value }
     })
   }
 
@@ -111,7 +110,8 @@ export default class ArrayField extends BaseField {
         const value = prevState.value.slice()
         value[index] = prevState.value[index - 1]
         value[index - 1] = prevState.value[index]
-        return { fields, value, changeNumber: getNextChangeNumber() }
+        this.handleValueChange(value)
+        return { fields, value }
       }
       else
         return null
@@ -132,7 +132,8 @@ export default class ArrayField extends BaseField {
         const value = prevState.value.slice()
         value[index] = prevState.value[index + 1]
         value[index + 1] = prevState.value[index]
-        return { fields, value, changeNumber: getNextChangeNumber() }
+        this.handleValueChange(value)
+        return { fields, value }
       }
       else
         return null
@@ -147,7 +148,8 @@ export default class ArrayField extends BaseField {
         value.splice(index, 1)
         const fields = prevState.fields.slice()
         fields.splice(index, 1)
-        return { fields, value, changeNumber: getNextChangeNumber() }
+        this.handleValueChange(value)
+        return { fields, value }
       }
       else
         return null

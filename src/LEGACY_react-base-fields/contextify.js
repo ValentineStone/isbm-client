@@ -15,17 +15,18 @@ export const withNameConsumer = () => Component => {
     if (props.name === undefined)
       return (
         <NameContext.Consumer>
-          {name => <Component {...props} name={name} ref={ref} />}
+          {name => <Component {...props} name={name} /*ref={ref}*/ />}
         </NameContext.Consumer>
       )
     else
-      return <Component {...props} ref={ref} />
+      return <Component {...props} /*ref={ref}*/ />
   }
   HOC.displayName = `WithNameConsumer(${displayNameOf(Component)})`
-  
+  /*
   const refHOC = React.forwardRef(HOC)
   refHOC.displayName = HOC.displayName
-  return refHOC
+  */
+  return HOC
 }
 
 export const withParentConsumer = () => Component => {
@@ -33,17 +34,18 @@ export const withParentConsumer = () => Component => {
     if (props.parent === undefined)
       return (
         <ParentContext.Consumer>
-          {parent => <Component {...props} parent={parent} ref={ref} />}
+          {parent => <Component {...props} parent={parent} /*ref={ref}*/ />}
         </ParentContext.Consumer>
       )
     else
-      return <Component {...props} ref={ref} />
+      return <Component {...props} /*ref={ref}*/ />
   }
   HOC.displayName = `WithParentConsumer(${displayNameOf(Component)})`
-  
+  /*
   const refHOC = React.forwardRef(HOC)
   refHOC.displayName = HOC.displayName
-  return refHOC
+  */
+  return HOC
 }
 
 export const asNameProvider = name => Component => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import BaseField, { getNextChangeNumber } from './BaseField.js'
+import BaseField from './BaseField.js'
 
 export default class ObjectField extends BaseField {
 
@@ -35,7 +35,8 @@ export default class ObjectField extends BaseField {
         delete value[name]
       else
         value[name] = _value
-      return { value, changeNumber: getNextChangeNumber() }
+      this.handleValueChange(value)
+      return { value }
     })
   }
 

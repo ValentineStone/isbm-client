@@ -1,16 +1,15 @@
 import React from 'react'
-import { getNextChangeNumber } from './BaseField.js'
+import BaseField from './BaseField.js'
 
 export default class MasterField extends React.PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
-      prevState.valueOrigin !== nextProps.value
+      prevState.initialValue !== nextProps.value
       && prevState.value !== nextProps.value
     ) {
       return {
         value: nextProps.value,
-        valueOrigin: nextProps.value,
-        changeNumber: Infinity
+        initialValue: nextProps.value
       }
     }
     else
@@ -20,18 +19,14 @@ export default class MasterField extends React.PureComponent {
     super(props)
     this.state = {
       value: props.value,
-      valueOrigin: props.value,
-      changeNumber: Infinity
+      initialValue: props.value
     }
   }
   getChildFieldValue() {
     return this.state.value
   }
   onChildChange(value) {
-    this.setState(prevState => prevState.value === value ? null : {
-      value,
-      changeNumber: getNextChangeNumber()
-    })
+    this.setState(prevState => prevState.value === value ? null : { value })
   }
   notifyOfChildDefaultValue() { }
   render() {
