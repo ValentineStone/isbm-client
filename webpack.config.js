@@ -47,32 +47,7 @@ module.exports = {
           explicitChildren: true,
           charsAsChildren: true
         }
-      },
-
-
-      // ------------- DEPRECATED USE CASE -------------
-      /*
-      {
-        test: /\.jsx$/,
-        include: srcDir,
-        loader: 'babel-loader',
-        options: {
-          "plugins": [
-            ["babel-plugin-provide-modules", {
-              "/jsx-pragma.js": ["h", "fragment"]
-            }],
-            ["@babel/plugin-transform-react-jsx", {
-              "pragma": "h",
-              "pragmaFrag": "fragment",
-              "useBuiltIns": true
-            }]
-          ]
-        }
       }
-      */
-      // ------------- DEPRECATED USE CASE -------------
-
-
     ]
   },
   plugins: [
