@@ -1,6 +1,6 @@
 import React from 'react'
 
-import EventEmmiter from '/utils/tiny-events'
+import EventEmmiter from '~/utils/tiny-events'
 
 const getDeep = (object, path) => {
   let value = object

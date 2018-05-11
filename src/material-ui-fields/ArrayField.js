@@ -1,11 +1,10 @@
 import React from 'react'
-import ArrayFieldBase from '/react-base-fields/ArrayField'
-import contextify from '/react-base-fields/contextify'
+import ArrayFieldBase from '~/react-base-fields/ArrayField'
+import contextify from '~/react-base-fields/contextify'
 
 import List, { ListItem } from 'material-ui/List'
 import IconButton from 'material-ui/IconButton'
 import Button from 'material-ui/Button'
-import Divider from 'material-ui/Divider'
 import { withStyles } from 'material-ui/styles'
 
 import AddIcon from 'material-ui-icons/Add'
@@ -41,14 +40,14 @@ implementation.ChildList.displayName = 'ArrayFieldImplementation.ChildList'
 implementation.ChildList = withStyles(childListStyles)(implementation.ChildList)
 
 implementation.EmptyChildListItem =
-  props => <ListItem />
+  props => null
 implementation.EmptyChildListItem.displayName =
   'ArrayFieldImplementation.EmptyChildListItem'
 
 
 const childListItemStyles = {
-  listItemContainer: {
-    width: '100%'
+  listItemRoot: {
+    display: 'block'
   },
   listItemButtons: {
     textAlign: 'right'
@@ -56,30 +55,32 @@ const childListItemStyles = {
 }
 
 implementation.ChildListItem = props => <>
-  <ListItem divider={!props.isLast}>
-    <div className={props.classes.listItemContainer}>
-      {props.children}
-      <div className={props.classes.listItemButtons}>
-        {props.isFirst ||
-          <IconButton onClick={() => props.parent.moveFieldUp(props.name)}>
-            <MoveUpIcon />
-          </IconButton>
-        }
-        {props.isLast ||
-          <IconButton onClick={() => props.parent.moveFieldDown(props.name)}>
-            <MoveDownIcon />
-          </IconButton>
-        }
-        <IconButton onClick={() => props.parent.removeField(props.name)}>
-          <RemoveIcon />
+  <ListItem
+    classes={{ root: props.classes.listItemRoot }}
+    divider={!props.isLast}
+  >
+    {props.children}
+    <div className={props.classes.listItemButtons}>
+      {props.isFirst ||
+        <IconButton onClick={() => props.parent.moveFieldUp(props.name)}>
+          <MoveUpIcon />
         </IconButton>
-      </div>
+      }
+      {props.isLast ||
+        <IconButton onClick={() => props.parent.moveFieldDown(props.name)}>
+          <MoveDownIcon />
+        </IconButton>
+      }
+      <IconButton onClick={() => props.parent.removeField(props.name)}>
+        <RemoveIcon />
+      </IconButton>
     </div>
   </ListItem>
 </>
 implementation.ChildListItem.displayName =
   'ArrayFieldImplementation.ChildListItem'
-implementation.ChildListItem = withStyles(childListItemStyles)(implementation.ChildListItem)
+implementation.ChildListItem =
+  withStyles(childListItemStyles)(implementation.ChildListItem)
 
 ArrayField.implementation = implementation
 

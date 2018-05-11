@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Generic from './Generic'
-import Development from '/Dev'
+import Development from '~/Dev'
 
 export default class ShapeshifterView extends React.PureComponent {
   render() {

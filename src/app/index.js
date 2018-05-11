@@ -1,9 +1,9 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from '/App'
+import App from '~/components/App'
 
-import EventEmmiter from '/utils/tiny-events'
+import EventEmmiter from '~/utils/tiny-events'
 import i18nInstance from './i18n'
 
 import server from './server'

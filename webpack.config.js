@@ -18,7 +18,7 @@ module.exports = {
     }
   },
   resolve: {
-    alias: { '': srcDir }
+    alias: { '~': srcDir }
   },
   module: {
     rules: [
