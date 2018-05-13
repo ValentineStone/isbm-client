@@ -2,15 +2,15 @@ import React from 'react'
 import ArrayFieldBase from '~/react-base-fields/ArrayField'
 import contextify from '~/react-base-fields/contextify'
 
-import List, { ListItem } from 'material-ui/List'
-import IconButton from 'material-ui/IconButton'
-import Button from 'material-ui/Button'
-import { withStyles } from 'material-ui/styles'
+import List, { ListItem } from '@material-ui/core/List'
+import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core/styles'
 
-import AddIcon from 'material-ui-icons/Add'
-import RemoveIcon from 'material-ui-icons/Clear'
-import MoveDownIcon from 'material-ui-icons/ArrowDownward'
-import MoveUpIcon from 'material-ui-icons/ArrowUpward'
+import AddIcon from '@material-ui/icons/Add'
+import RemoveIcon from '@material-ui/icons/Clear'
+import MoveDownIcon from '@material-ui/icons/ArrowDownward'
+import MoveUpIcon from '@material-ui/icons/ArrowUpward'
 
 class ArrayField extends ArrayFieldBase { }
 

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import Toolbar from 'material-ui/Toolbar'
+import Toolbar from '@material-ui/core/Toolbar'
 
-import StoreIcon from 'material-ui-icons/Store'
-import SettingsIcon from 'material-ui-icons/Settings'
-import ReceiptIcon from 'material-ui-icons/Receipt'
-import AssignmentTurnedInIcon from 'material-ui-icons/AssignmentTurnedIn'
-import CropOriginalIcon from 'material-ui-icons/CropOriginal'
-import AccountCircleIcon from 'material-ui-icons/AccountCircle'
+import StoreIcon from '@material-ui/icons/Store'
+import SettingsIcon from '@material-ui/icons/Settings'
+import ReceiptIcon from '@material-ui/icons/Receipt'
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
+import CropOriginalIcon from '@material-ui/icons/CropOriginal'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 
 import IconLink from './IconLink'
 

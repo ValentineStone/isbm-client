@@ -1,7 +1,7 @@
 import React from 'react'
-import TextField from 'material-ui/TextField'
-import Divider from 'material-ui/Divider'
-import Typography from 'material-ui/Typography'
+import TextField from '@material-ui/core/TextField'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 
 import Wiki from '~/components/Wiki'
 

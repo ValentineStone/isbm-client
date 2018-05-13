@@ -1,8 +1,8 @@
 import React from 'react'
-import Typography from 'material-ui/Typography'
-import Paper from 'material-ui/Paper'
-import { LinearProgress } from 'material-ui/Progress'
-import { MuiThemeProvider } from 'material-ui/styles'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import { LinearProgress } from '@material-ui/core/Progress'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 
 import i18n, { withTranslation, t } from '~/app/i18n'
 

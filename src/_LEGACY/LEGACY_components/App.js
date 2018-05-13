@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { BrowserRouter, Route } from 'react-router-dom'
-import { MuiThemeProvider } from 'material-ui/styles'
-import CssBaseline from 'material-ui/CssBaseline'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 import app from '~/app'
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import Inspector from 'react-inspector'
 
 export default withTheme()(({ theme, ...props }) => {

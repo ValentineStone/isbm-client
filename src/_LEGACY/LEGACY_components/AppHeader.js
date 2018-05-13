@@ -1,13 +1,13 @@
 import React from 'react'
 
-import AppBar from 'material-ui/AppBar'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 
-import InvertColorsIcon from 'material-ui-icons/InvertColors'
-import CodeIcon from 'material-ui-icons/Code'
-import PaletteIcon from 'material-ui-icons/Palette'
-import TranslateIcon from 'material-ui-icons/Translate'
+import InvertColorsIcon from '@material-ui/icons/InvertColors'
+import CodeIcon from '@material-ui/icons/Code'
+import PaletteIcon from '@material-ui/icons/Palette'
+import TranslateIcon from '@material-ui/icons/Translate'
 
 import IconLink from './IconLink'
 

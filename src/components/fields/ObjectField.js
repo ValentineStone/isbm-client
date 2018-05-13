@@ -2,9 +2,9 @@ import React from 'react'
 import ObjectFieldBase from '~/react-base-fields/ObjectField'
 import contextify from '~/react-base-fields/contextify'
 
-import List, { ListItem } from 'material-ui/List'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
+import List, { ListItem } from '@material-ui/core/List'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 class ObjectField extends ObjectFieldBase { }
 
