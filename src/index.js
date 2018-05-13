@@ -5,19 +5,45 @@ import 'whatwg-fetch'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
+
+import { BrowserRouter, Route } from 'react-router-dom'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import App from '~/components/App'
+import thunkMiddleware from 'redux-thunk'
+import loggerMiddleware from '~/utils/redux-logger'
+
 import rootReducer from '~/reducers'
-//import { initial, translate, setTheme } from '~/actions'
+import { initializeApp } from '~/actions'
+import { importLang } from '~/langs'
+import App from '~/containers/App'
+import RouteContext from '~/context/RouteContext'
 
-const store = createStore(rootReducer)
-
-const renderApp = () => ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.querySelector('#app')
+const store = createStore(
+  rootReducer,
+  applyMiddleware(thunkMiddleware, loggerMiddleware)
 )
 
-store.dispatch()
+const renderApp = () => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <Route>
+          {route => (
+            <RouteContext.Provider value={route}>
+              <App />
+            </RouteContext.Provider>
+          )}
+        </Route>
+      </BrowserRouter>
+    </Provider>,
+    document.querySelector('#app')
+  )
+}
+
+store.dispatch(initializeApp({
+  i18nOptions: {
+    importLang,
+    defaultLang: 'en'
+  },
+  onAppInitialized: renderApp
+}))

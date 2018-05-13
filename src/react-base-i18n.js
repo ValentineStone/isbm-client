@@ -35,10 +35,10 @@ export default class I18n extends EventEmmiter {
     templateLiteralReplaceRegex = /{(.*?)}/g,
     nestedPathSeparator = /\./,
     allowNestedPaths = false,
-    fallbackOnDefaultLang = false,
+    fallbackOnDefaultLang = true,
     prefixUnknownPaths = false,
     setHTMLLangAttribute = true,
-    onDefaultLoaded
+    onReady
   }) {
     super()
 
@@ -52,8 +52,6 @@ export default class I18n extends EventEmmiter {
     this.setHTMLLangAttribute = setHTMLLangAttribute
     this.defaultLangLoaded = false
 
-    this.setLangQueue = Promise.resolve()
-
     this.defaultLang = defaultLang
     this.defaultModule = undefined
     this.lang = undefined
@@ -64,11 +62,23 @@ export default class I18n extends EventEmmiter {
     this.getTemplateLiteralTranslation =
       this.getTemplateLiteralTranslation.bind(this)
 
-    this.setLang(this.defaultLang).then(onDefaultLoaded)
+
+
+    this.translationQueue = Promise.resolve()
+    this.translationQueue = this.setLang(this.defaultLang)
+      .then(() => this.defaultModule = this.module)
+
+    if (initialLang)
+      this.setLang(initialLang)
+    this.getTranslationQueue().then(onReady)
+  }
+
+  getTranslationQueue() {
+    return this.translationQueue
   }
 
   setLang(lang) {
-    return this.setLangQueue = this.setLangQueue
+    return this.translationQueue = this.translationQueue
       .then(() => this.importLang(lang))
       .then(module => {
         if (lang !== this.lang) {
@@ -140,47 +150,7 @@ export default class I18n extends EventEmmiter {
       return this.getTranslation(strings)
   }
 
-}
-
-export const createI18nInstance = options => I18n.instance = new I18n(options)
-//export const getI18nInstance = () => I18n.instance
-
-export const t = (...args) => I18n.instance.t(...args)
-
-export const setLang = lang => I18n.instance.setLang(lang)
-
-export const withTranslation = i18nInstance => Component => {
-  class WithTranslation extends React.Component {
-    constructor() {
-      super()
-      this.state = {}
-      this.onTranslate = this.onTranslate.bind(this)
-      this.i18nInstance = i18nInstance || I18n.instance
-    }
-    onTranslate(lang, prevLang) {
-      this.setState(prevState => {
-        if (prevState.lang === lang)
-          return null
-        else
-          return { lang }
-      })
-    }
-    componentDidMount() {
-      this.i18nInstance.on('translate', this.onTranslate)
-    }
-    componentWillUnmount() {
-      this.i18nInstance.remove('translate', this.onTranslate)
-    }
-    render() {
-      return (
-        <Component
-          {...this.props}
-          lang={this.state.lang}
-        />
-      )
-    }
+  toJSON() {
+    return this.toString()
   }
-  WithTranslation.displayName =
-    `WithTranslation(${Component.displayName || Component.name || 'Component'})`
-  return WithTranslation
 }

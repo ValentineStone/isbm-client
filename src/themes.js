@@ -1,5 +1,4 @@
 import { createMuiTheme } from 'material-ui/styles'
-import app from '~/app'
 
 const colors = {
   primary: {
