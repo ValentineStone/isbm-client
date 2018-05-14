@@ -6,11 +6,11 @@ import {
   FETCH_PREFERENCES,
   INITIALIZE_I18N,
   DUMMY_ACTION,
-  TOGGLE_THEME,
+  SET_THEME,
   TRANSLATE,
-} from '~/actions'
-
-import { lightTheme, darkTheme } from '~/themes'
+  AUTHENTICATE_USER,
+  LOG_OUT_USER,
+} from '~/actions/types'
 
 export const stateWithInitialStatus = (...keys) => {
   return keys.reduce((state, key) => (state[key] = STATUS_INITIAL, state), {})
@@ -38,6 +38,10 @@ const rootReducer = combineReducers({
     switch (action.type) {
       case IDENTIFY_USER.SUCCESS:
         return { ...action.payload }
+      case AUTHENTICATE_USER.SUCCESS:
+        return { ...action.payload }
+      case LOG_OUT_USER.SUCCESS:
+        return {}
       default:
         return state
     }
@@ -65,10 +69,8 @@ const rootReducer = combineReducers({
   },
   theme(state = null, action) {
     switch (action.type) {
-      case FETCH_PREFERENCES.SUCCESS:
-        return action.payload.theme === 'dark' ? darkTheme : lightTheme
-      case TOGGLE_THEME:
-        return state && (state === darkTheme ? lightTheme : darkTheme)
+      case SET_THEME:
+        return action.payload.themeObject
       default:
         return state
     }

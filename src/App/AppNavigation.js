@@ -9,7 +9,7 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import CropOriginalIcon from '@material-ui/icons/CropOriginal'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 
-import IconLink from './IconLink'
+import IconLink from '~/components/IconLink'
 
 export default class AppNavigation extends React.PureComponent {
   render() {

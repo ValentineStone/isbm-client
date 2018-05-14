@@ -1,6 +1,6 @@
 import React from 'react'
-import PrimitiveField from '~/react-base-fields/PrimitiveField'
-import contextify from '~/react-base-fields/contextify'
+import PrimitiveField from '../base-fields/PrimitiveField'
+import contextify from '../base-fields/contextify'
 import MuiTextField from '@material-ui/core/TextField'
 import { InputAdornment } from '@material-ui/core/Input'
 

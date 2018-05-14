@@ -54,6 +54,9 @@ export default class BaseField extends React.PureComponent {
       changeNumber: getNextChangeNumber()
     })
   }
+  getValue() {
+    return this.state.value
+  }
   componentWillUnmount() {
     if (this.props.parent)
       this.props.parent.onChildChange(undefined, this.props.name, true)

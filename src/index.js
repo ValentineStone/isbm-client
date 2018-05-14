@@ -13,9 +13,9 @@ import thunkMiddleware from 'redux-thunk'
 import loggerMiddleware from '~/utils/redux-logger'
 
 import rootReducer from '~/reducers'
-import { initializeApp } from '~/actions'
+import initializeApp from '~/actions/initializeApp'
 import { importLang } from '~/langs'
-import App from '~/containers/App'
+import App from '~/App'
 import RouteContext from '~/context/RouteContext'
 
 const store = createStore(

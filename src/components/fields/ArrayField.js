@@ -1,8 +1,9 @@
 import React from 'react'
-import ArrayFieldBase from '~/react-base-fields/ArrayField'
-import contextify from '~/react-base-fields/contextify'
+import ArrayFieldBase from '../base-fields/ArrayField'
+import contextify from '../base-fields/contextify'
 
-import List, { ListItem } from '@material-ui/core/List'
+import ListItem from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
@@ -24,7 +25,7 @@ const childListStyles = theme => ({
 
 implementation.ChildList = props => (
   <List>
-    <ListItem divider={Boolean(props.fieldCount)}>
+    <ListItem disableGutters divider={Boolean(props.fieldCount)}>
       <Button
         fullWidth
         onClick={props.parent.addField}
@@ -56,6 +57,7 @@ const childListItemStyles = {
 
 implementation.ChildListItem = props => <>
   <ListItem
+    disableGutters
     classes={{ root: props.classes.listItemRoot }}
     divider={!props.isLast}
   >

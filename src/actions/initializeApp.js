@@ -8,14 +8,39 @@ import {
 import {
   createThunkAction,
   createThunkActionSequence,
-  noThrow
+  noThrow,
+  thunkify
 } from './thunkActions'
 
-import I18n from '~/react-base-i18n'
+import jrpc from './jrpc'
 
-const identifyUser = async () => ({ username: 'bob' })
-const fetchPreferences = () => ({ lang: 'ru', theme: 'dark' })
-const initializeI18n = async (i18nOptions) => {
+import setTheme from './setTheme'
+
+import I18n from '~/utils/i18n'
+
+const fetchPreferences = () => {
+  return {
+    lang: localStorage.getItem("lang") === 'ru' ? 'ru' : 'en',
+    theme: localStorage.getItem("theme") === 'dark' ? 'dark' : 'light'
+  }
+}
+const identifyUser = () => async dispatch => {
+  const guestUser = { guest: true }
+  const jwt = localStorage.getItem('jwt')
+  if (jwt) {
+    const user = await dispatch(jrpc('authenticateUser', { jwt }))
+      .catch(() => guestUser)
+    if (user) {
+      localStorage.setItem('jwt', user.jwt)
+      return user
+    }
+    else
+      return guestUser
+  }
+  else
+    return guestUser
+}
+const initializeI18n = async i18nOptions => {
   const i18nInstance = new I18n(i18nOptions)
   await i18nInstance.getTranslationQueue()
   return i18nInstance
@@ -25,7 +50,7 @@ const identifyUserThunkAction =
   createThunkAction(
     IDENTIFY_USER,
     identifyUser,
-    { throws: true }
+    { throws: true, fromThunkAction: true }
   )
 const fetchPreferencesThunkAction =
   createThunkAction(
@@ -44,6 +69,9 @@ const initializeAppThunkActionSequence =
   createThunkActionSequence(
     identifyUserThunkAction,
     fetchPreferencesThunkAction,
+    [thunkify(setTheme), {
+      withArguments: (getState, prevResult) => [prevResult.theme]
+    }],
     [initializeI18nThunkAction, {
       withArguments: (getState, prevResult, options) => [{
         ...options.i18nOptions,
@@ -59,7 +87,7 @@ const initializeAppThunkAction =
     { fromThunkAction: true, throws: true }
   )
 
-export const initializeApp = noThrow(createThunkActionSequence(
+const initializeApp = noThrow(createThunkActionSequence(
   [initializeAppThunkAction, {
     withArguments: true
   }],
@@ -67,3 +95,5 @@ export const initializeApp = noThrow(createThunkActionSequence(
     withArguments: true
   }],
 ))
+
+export default initializeApp

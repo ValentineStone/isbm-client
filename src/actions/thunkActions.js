@@ -52,19 +52,23 @@ export const createThunkAction = (
           false,
           result, ...args
         )))
+      return result
     } catch (error) {
       if (FAILURE_TYPE !== undefined) {
-        const failureAction = dispatch(action(FAILURE_TYPE, createPayloadAndMeta(
+        const failureAction = action(FAILURE_TYPE, createPayloadAndMeta(
           failurePayloadCreator,
           failureMetaCreator,
           true,
           error, ...args
-        )))
+        ))
+        dispatch(failureAction)
         if (throws)
-          if (throws === 'function')
+          if (typeof throws === 'function')
             throw throws(failureAction)
           else
             throw new Error(`${FAILURE_TYPE}: ${error}`)
+        else
+          return error
       }
       else
         throw error
@@ -135,3 +139,6 @@ export const noThrow = (
       dispatch(errorAction(error))
   }
 }
+
+export const thunkify =
+  action => (...args) => dispatch => dispatch(action(...args))
