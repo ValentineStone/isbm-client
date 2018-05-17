@@ -146,6 +146,8 @@ export default class I18n extends EventEmmiter {
         return this.getTemplateLiteralTranslation(strings[0])
       else
         return this.getTranslation(strings[0])
+    else if (typeof strings === 'object' && strings && 'withRegex' in strings)
+      return this.getTemplateLiteralTranslation(strings.withRegex)
     else
       return this.getTranslation(strings)
   }

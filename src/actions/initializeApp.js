@@ -20,7 +20,7 @@ import I18n from '~/utils/i18n'
 
 const fetchPreferences = () => {
   return {
-    lang: localStorage.getItem("lang") === 'ru' ? 'ru' : 'en',
+    lang: localStorage.getItem("lang") === 'en' ? 'en' : 'ru',
     theme: localStorage.getItem("theme") === 'dark' ? 'dark' : 'light'
   }
 }
