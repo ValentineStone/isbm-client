@@ -47,6 +47,15 @@ module.exports = {
           explicitChildren: true,
           charsAsChildren: true
         }
+      },
+      {
+        test: /\.csv$/,
+        loader: 'csv-loader',
+        options: {
+          dynamicTyping: false,
+          //header: true,
+          skipEmptyLines: true
+        }
       }
     ]
   },

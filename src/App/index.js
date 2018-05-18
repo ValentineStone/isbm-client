@@ -12,6 +12,7 @@ import LoginForm from '~/containers/LoginForm'
 import BasicCalculator from '~/containers/BasicCalculator'
 
 function App(props) {
+  if (!props.theme) return null
   return (
     <AppWrapper theme={props.theme}>
       <AppHeader showDev={!props.user.guest} />

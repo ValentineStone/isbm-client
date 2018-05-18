@@ -1,15 +1,43 @@
+/*
 const knownFrames = [
-  { artNo: 1, name: 'Pinkie Pie', width: .05, price: 250 },
+  { artNo: 1, name: 'Pinkie Pie', width: .056, price: 565 },
   { artNo: 2, name: 'Twilight sparkle', width: .06, price: 298 },
   { artNo: 3, name: 'Rainbow Dash', width: .04, price: 228 },
   { artNo: 4, name: 'Rarity', width: .11, price: 728 },
   { artNo: 5, name: 'Fluttershy', width: .03, price: 201 },
-  { artNo: 6, name: 'Applejack', width: .07, price: 412 },
+  { artNo: 6, name: 'Applejack', width: .07, price: 412 }
 ]
+*/
 
-const getFrameWidth = ({ articleNumber }) => getFrameProps(articleNumber).width
-const getFramePrice = ({ articleNumber }) => getFrameProps(articleNumber).price
-const getFrameName = ({ articleNumber }) => getFrameProps(articleNumber).name
+import knownFrames from './knownFrames.csv'
+// Багет,Артикул,"Ширина, мм","Цена, руб"
+knownFrames.forEach(r => r[2] /= 1000)
+knownFrames.shift()
+
+const dummyObject = Object.freeze({})
+let cacheKey
+let cacheValue
+function getFrameProps(artNo) {
+  if (!artNo && typeof artNo !== 'number') return dummyObject
+  if (artNo === cacheKey)
+    return cacheValue
+  else {
+    cacheKey = artNo
+    cacheValue = knownFrames.find(frame => frame[1] == artNo) || dummyObject
+    return cacheValue
+  }
+}
+
+const getFrameWidth = ({ articleNumber }) => getFrameProps(articleNumber)[2]
+const getFramePrice = ({ articleNumber }) => getFrameProps(articleNumber)[3]
+const getFrameName = ({ articleNumber }) => getFrameProps(articleNumber)[0]
+
+export const glassTypes = {
+  regular: 'Regular glass',
+  antiReflective: 'Anti-reflective glass',
+  museum: 'Museum glass',
+  none: 'No glass'
+}
 
 export default [{
   workWidth: {
@@ -23,7 +51,7 @@ export default [{
   workHeight: {
     element: 'number',
     props: {
-      label: 'Work Height',
+      label: 'Work height',
       units: 'cm',
       scale: 1 / 100
     }
@@ -39,8 +67,8 @@ export default [{
     element: 'number',
     props: {
       label: 'Frame width',
-      units: 'cm',
-      scale: 1 / 100,
+      units: 'mm',
+      scale: 1 / 1000,
       equals: getFrameWidth
     }
   },
@@ -74,12 +102,7 @@ export default [{
       single: true,
       label: 'Glass',
       default: 'regular',
-      options: {
-        regular: 'Regular glass',
-        antiReflective: 'Anti-reflective glass',
-        museum: 'Museum glass',
-        none: 'No glass'
-      }
+      options: glassTypes
     }
   },/*
   price: {
@@ -186,7 +209,10 @@ export function calc({
     * (workHeight + 2 * frameWidth)
   montageTotal = montageTotal < 200 ? 200 : montageTotal
 
-  let frameTotal = (workPerimeter + frameWidth * 8 + .1) * framePrice
+  let frameUsageTotal = workPerimeter + frameWidth * 8 + .1
+  if (frameWidth > 0.07)
+    frameUsageTotal = Math.ceil(frameUsageTotal / 2.9) * 2.9
+  let frameTotal = frameUsageTotal * framePrice
 
   let embroideryStretchingTotal = (embroideryStretching ? 1 : 0) * workArea * 1200
   let cardboardCount = (embroideryStretching ? 1 : 0) + (cardboardBackpane ? 1 : 0)
@@ -196,6 +222,7 @@ export function calc({
   let antiReflectiveGlassTotal = (glass === 'antiReflective' ? 1 : 0) * workArea * 3300
   let museumGlassTotal = (glass === 'museum' ? 1 : 0) * workArea * 15000
 
+  let canvasUsageTotal = (workWidth + 0.1) * (workHeight + 0.1)
   let canvasPrintingTotal = canvasPrinting ? workArea * 3900 : 0
   let photoPrintingTotal = photoPrinting ? workArea * 2800 : 0
   let portraitInCharacterTotal = portraitInCharacter ? 1900 : 0
@@ -220,9 +247,5 @@ export function calc({
 
   let total = montageTotal + frameTotal + extrasTotal
 
-  return total
-}
-
-function getFrameProps(artNo) {
-  return knownFrames.find(frame => frame.artNo == artNo) || {}
+  return total * 1.1
 }
