@@ -2,7 +2,7 @@ import { JRPC } from './types'
 
 import { createThunkAction } from './thunkActions'
 
-const endpointURL = 'http://192.168.0.15:4000'
+const endpointURL = 'http://127.0.0.1:4000'
 
 const isJRPCError =
   json => typeof json === 'object' && json && 'error' in json

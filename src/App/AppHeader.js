@@ -41,9 +41,9 @@ AppHeader = class AppHeader extends React.PureComponent {
               }}
             </Translated>
           </Typography>
-          {this.props.showDev && <IconLink icon={CodeIcon} to="/development" />}
-          <IconLink icon={TranslateIcon} action={this.props.onToggleLang} />
-          <IconLink icon={InvertColorsIcon} action={this.props.onToggleTheme} />
+          {this.props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
+          <IconLink Icon={TranslateIcon} onClick={this.props.onToggleLang} />
+          <IconLink Icon={InvertColorsIcon} onClick={this.props.onToggleTheme} />
         </Toolbar>
       </AppBar>
     )

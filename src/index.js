@@ -30,7 +30,7 @@ const renderApp = () => {
         <Route>
           {route => (
             <RouteContext.Provider value={route}>
-              <App />
+              <Route component={App}/>
             </RouteContext.Provider>
           )}
         </Route>
