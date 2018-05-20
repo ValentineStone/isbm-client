@@ -1,10 +1,10 @@
 import { LOG_OUT_USER } from './types'
-import jrpc from './jrpc'
+import jsonrpc from './jsonrpc'
 
 import { createThunkAction } from './thunkActions'
 
 export const logOutUser = () => async dispatch => {
-  const success = await dispatch(jrpc('logOutUser'))
+  const success = await dispatch(jsonrpc('logOutUser'))
   if (success)
     localStorage.removeItem('jwt')
 }

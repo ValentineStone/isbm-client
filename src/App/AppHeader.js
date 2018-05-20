@@ -21,31 +21,35 @@ let AppHeader
 AppHeader = class AppHeader extends React.PureComponent {
   render() {
     return (
-      <AppBar
-        position="sticky"
-        color="default"
-        style={{ opacity: .95 }}
-      >
-        <Toolbar>
-          <Typography
-            style={{ flex: 1 }}
-            variant="headline"
-          >
-            <Translated>
-              {t => {
-                const appName = t`app.name`
-                return <>
-                  {ReactDOM.createPortal(appName, titleElement)}
-                  {this.props.width === 'xs' ? t`app.shortname` : appName}
-                </>
-              }}
-            </Translated>
-          </Typography>
-          {this.props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
-          <IconLink Icon={TranslateIcon} onClick={this.props.onToggleLang} />
-          <IconLink Icon={InvertColorsIcon} onClick={this.props.onToggleTheme} />
-        </Toolbar>
-      </AppBar>
+      <>
+        <Toolbar />
+        <AppBar
+          position="absolute"
+          color="default"
+          style={{ opacity: .95 }}
+          elevation={0}
+        >
+          <Toolbar>
+            <Typography
+              style={{ flex: 1 }}
+              variant="headline"
+            >
+              <Translated>
+                {t => {
+                  const appName = t`app.name`
+                  return <>
+                    {ReactDOM.createPortal(appName, titleElement)}
+                    {this.props.width === 'xs' ? t`app.shortname` : appName}
+                  </>
+                }}
+              </Translated>
+            </Typography>
+            {this.props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
+            <IconLink Icon={TranslateIcon} onClick={this.props.onToggleLang} />
+            <IconLink Icon={InvertColorsIcon} onClick={this.props.onToggleTheme} />
+          </Toolbar>
+        </AppBar>
+      </>
     )
   }
 }

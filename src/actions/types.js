@@ -21,6 +21,6 @@ export const TOGGLE_LANG = 'TOGGLE_LANG'
 
 export const SET_THEME = 'SET_THEME'
 
-export const JRPC = createAsyncType('JRPC')
+export const JSONRPC = createAsyncType('JSONRPC')
 export const AUTHENTICATE_USER = createAsyncType('AUTHENTICATE_USER')
 export const LOG_OUT_USER = createAsyncType('LOG_OUT_USER')

@@ -6,13 +6,16 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
+import withWidth from '@material-ui/core/withWidth'
+import AppBar from '@material-ui/core/AppBar'
 
-import StoreIcon from '@material-ui/icons/Store'
+import WarehouseIcon from '@material-ui/icons/Store'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ReceiptIcon from '@material-ui/icons/Receipt'
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
-import CropOriginalIcon from '@material-ui/icons/CropOriginal'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import TasksIcon from '@material-ui/icons/AssignmentTurnedIn'
+import ProductsIcon from '@material-ui/icons/CropOriginal'
+import ProfileIcon from '@material-ui/icons/AccountCircle'
+import ClientsIcon from '@material-ui/icons/Group'
 import LogOutIcon from '@material-ui/icons/ExitToApp'
 
 import IconLink from '~/components/IconLink'
@@ -22,43 +25,43 @@ import Translated from '~/containers/Translated'
 class AppNavigation extends React.PureComponent {
   render() {
     return (
-      <Grid container className={this.props.classes.toolbar}>
-        <Grid item>
-          <IconLink Icon={ReceiptIcon} to="/orders" />
-          <IconLink Icon={CropOriginalIcon} to="/products" />
-          <IconLink Icon={AccountCircleIcon} to="/clients" />
-          <IconLink Icon={StoreIcon} to="/warehouse" />
-          <IconLink Icon={AssignmentTurnedInIcon} to="/tasks" />
-          <IconLink Icon={SettingsIcon} to="/settings" />
+      <AppBar
+        position="sticky"
+        color="default"
+        className={this.props.classes.appbar}
+      >
+        <Grid container className={this.props.classes.toolbar}>
+          <Grid item>
+            <IconLink Icon={ReceiptIcon} to="/orders" />
+            {/*<IconLink Icon={ProductsIcon} to="/products" />*/}
+            <IconLink Icon={ClientsIcon} to="/clients" />
+            <IconLink Icon={WarehouseIcon} to="/warehouse" />
+            <IconLink Icon={TasksIcon} to="/tasks" />
+            <IconLink Icon={ProfileIcon} to="/profile" />
+            <IconLink Icon={SettingsIcon} to="/settings" />
+          </Grid>
+          {this.props.width !== 'xs' &&
+            <Grid
+              item
+              container
+              alignItems="center"
+              justify="flex-end"
+              wrap="nowrap"
+              classes={{
+                container: this.props.classes.userControls
+              }}
+            >
+              <TextLink to="/profile" underlined>
+                {this.props.user.alias}
+              </TextLink>
+              <IconLink
+                Icon={LogOutIcon}
+                onClick={this.props.logOutUser}
+              />
+            </Grid>
+          }
         </Grid>
-        <Grid
-          item
-          container
-          alignItems="center"
-          justify="flex-end"
-          wrap="nowrap"
-          classes={{
-            container: this.props.classes.userControls
-          }}
-        >
-          <Translated>
-            {t =>
-              <>
-                <Typography className={this.props.classes.welcome}>
-                  {t`Welcome`}
-                </Typography>
-                <TextLink to="/profile" underlined>
-                  {this.props.user.alias}
-                </TextLink>
-                <IconLink
-                  Icon={LogOutIcon}
-                  onClick={this.props.logOutUser}
-                />
-              </>
-            }
-          </Translated>
-        </Grid>
-      </Grid>
+      </AppBar>
     )
   }
 }
@@ -73,7 +76,10 @@ const styles = {
   },
   toolbar: {
     padding: '0 1em'
+  },
+  appbar: {
+    zIndex: 1099
   }
 }
 
-export default withStyles(styles)(AppNavigation)
+export default withStyles(styles)(withWidth()(AppNavigation))

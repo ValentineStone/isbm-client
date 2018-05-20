@@ -11,7 +11,8 @@ import AppContent from './AppContent'
 import AppWrapper from './AppWrapper'
 import LoginForm from '~/containers/LoginForm'
 
-import PlaceholderView from '~/containers/views/Placeholder'
+import UnknownView from '~/containers/views/Unknown'
+import DevelopmentView from '~/containers/views/Development'
 
 function App(props) {
   return (
@@ -23,7 +24,8 @@ function App(props) {
           <AppNavigation user={props.user} logOutUser={props.logOutUser} />
           <AppContent>
             <Switch>
-              <Route component={PlaceholderView} />
+              <Route path="/development" component={DevelopmentView} />
+              <Route component={UnknownView} />
             </Switch>
           </AppContent>
         </>

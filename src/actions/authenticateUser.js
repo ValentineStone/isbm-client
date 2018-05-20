@@ -1,10 +1,10 @@
 import { AUTHENTICATE_USER } from './types'
-import jrpc from './jrpc'
+import jsonrpc from './jsonrpc'
 
 import { createThunkAction } from './thunkActions'
 
 export const authenticateUser = userCredentials => async dispatch => {
-  const user = await dispatch(jrpc('authenticateUser', userCredentials))
+  const user = await dispatch(jsonrpc('authenticateUser', userCredentials))
   if (user)
     localStorage.setItem('jwt', user.jwt)
   return user

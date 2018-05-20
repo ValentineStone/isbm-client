@@ -12,7 +12,7 @@ import {
   thunkify
 } from './thunkActions'
 
-import jrpc from './jrpc'
+import jsonrpc from './jsonrpc'
 
 import setTheme from './setTheme'
 
@@ -28,7 +28,7 @@ const identifyUser = () => async dispatch => {
   const guestUser = { guest: true }
   const jwt = localStorage.getItem('jwt')
   if (jwt) {
-    const user = await dispatch(jrpc('authenticateUser', { jwt }))
+    const user = await dispatch(jsonrpc('authenticateUser', { jwt }))
       .catch(() => guestUser)
     if (user) {
       localStorage.setItem('jwt', user.jwt)
