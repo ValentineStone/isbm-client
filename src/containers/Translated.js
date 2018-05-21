@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
 
 function Translated(props) {
-  return props.children(props.i18n.t, props.i18n)
+  if (typeof props.children === 'function')
+    return props.children(props.i18n.t, props.i18n)
+  else
+    return props.i18n.t(props.children)
 }
 
 function mapStateToProps(state) {

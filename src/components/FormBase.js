@@ -3,21 +3,34 @@ import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-function FormBase(props) {
-  const Base = props.underlay ? Paper : 'div'
+import cx from '~/utils/cx'
+
+function FormBase({
+  underlay,
+  classes,
+  onSubmit,
+  title,
+  children,
+  className,
+  ...restProps
+}) {
+  const Base = underlay ? Paper : 'div'
   return (
-    <Base className={props.classes.root}>
-      <form onSubmit={props.onSubmit}>
-        {props.title && (
+    <Base
+      {...restProps}
+      className={cx(classes.root, className)}
+    >
+      <form onSubmit={onSubmit}>
+        {title && (
           <Typography
             variant="headline"
             align="center"
-            className={props.classes.title}
+            className={classes.title}
           >
-            {props.title}
+            {title}
           </Typography>
         )}
-        {props.children}
+        {children}
       </form>
     </Base>
   )

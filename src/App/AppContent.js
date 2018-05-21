@@ -12,7 +12,7 @@ function AppContent(props) {
 
 const styles = {
   main: {
-    padding: '1em',
+    padding: 8,
     overflowX: 'auto'
   }
 }

@@ -21,10 +21,12 @@ LoginForm = class LoginForm extends React.PureComponent {
     }
   }
   render() {
+    const { onSubmit, ...formProps } = this.props
     return (
       <Translated>
         {t =>
           <FormBase
+            {...formProps}
             underlay={this.props.width !== 'xs'}
             title={t`Please sign in`}
             onSubmit={this.onSubmit}

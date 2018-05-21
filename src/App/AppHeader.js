@@ -5,11 +5,13 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 
+import DebugIcon from '@material-ui/icons/BugReport'
 import InvertColorsIcon from '@material-ui/icons/InvertColors'
 import CodeIcon from '@material-ui/icons/Code'
 import PaletteIcon from '@material-ui/icons/Palette'
 import TranslateIcon from '@material-ui/icons/Translate'
 import withWidth from '@material-ui/core/withWidth'
+import { withStyles } from '@material-ui/core/styles'
 
 import IconLink from '~/components/IconLink'
 import Translated from '~/containers/Translated'
@@ -17,44 +19,65 @@ import Translated from '~/containers/Translated'
 
 const titleElement = document.querySelector('title')
 
+
+const debugStylesheet = document.head.querySelector('#debug-stylesheet')
+const debugHitboxToggle = () => {
+  if (localStorage.getItem('debuggingHitboxes') === 'true') {
+    debugStylesheet.innerHTML = ''
+    localStorage.setItem('debuggingHitboxes', 'false')
+  }
+  else {
+    debugStylesheet.innerHTML = '* {border: 1px solid rgba(0,0,0,.1);}'
+    localStorage.setItem('debuggingHitboxes', 'true')
+  }
+}
+if (localStorage.getItem('debuggingHitboxes') === 'true')
+  debugHitboxToggle()
+
 let AppHeader
-AppHeader = class AppHeader extends React.PureComponent {
-  render() {
-    return (
-      <>
-        <Toolbar />
-        <AppBar
-          position="absolute"
-          color="default"
-          style={{ opacity: .95 }}
-          elevation={0}
+AppHeader = function AppHeader(props) {
+  return (
+    <AppBar
+      position="static"
+      color="default"
+      className={props.classes.appBar}
+      elevation={props.navigationVisible ? 0 : undefined}
+    >
+      <Toolbar>
+        <Typography
+          className={props.classes.appTitle}
+          variant="display1"
         >
-          <Toolbar>
-            <Typography
-              style={{ flex: 1 }}
-              variant="headline"
-            >
-              <Translated>
-                {t => {
-                  const appName = t`app.name`
-                  return <>
-                    {ReactDOM.createPortal(appName, titleElement)}
-                    {this.props.width === 'xs' ? t`app.shortname` : appName}
-                  </>
-                }}
-              </Translated>
-            </Typography>
-            {this.props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
-            <IconLink Icon={TranslateIcon} onClick={this.props.onToggleLang} />
-            <IconLink Icon={InvertColorsIcon} onClick={this.props.onToggleTheme} />
-          </Toolbar>
-        </AppBar>
-      </>
-    )
+          <Translated>
+            {t => {
+              const appName = t`app.name`
+              return <>
+                {ReactDOM.createPortal(appName, titleElement)}
+                {props.width === 'xs' ? t`app.shortname` : appName}
+              </>
+            }}
+          </Translated>
+        </Typography>
+        {props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
+        <IconLink Icon={TranslateIcon} onClick={props.onToggleLang} />
+        <IconLink Icon={InvertColorsIcon} onClick={props.onToggleTheme} />
+        <IconLink Icon={DebugIcon} onClick={debugHitboxToggle} />
+      </Toolbar>
+    </AppBar>
+  )
+}
+
+const styles = {
+  appBar: {
+    opacity: .95,
+    position: 'relative'
+  },
+  appTitle: {
+    flex: 1
   }
 }
 
-AppHeader = withWidth()(AppHeader)
+AppHeader = withStyles(styles)(withWidth()(AppHeader))
 
 import { connect } from 'react-redux'
 import toggleLang from '~/actions/toggleLang'

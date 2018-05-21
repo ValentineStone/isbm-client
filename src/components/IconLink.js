@@ -11,7 +11,7 @@ export default function IconLink({ Icon, IconProps, ...props }) {
         {route =>
           <Icon
             color={
-              route.location.pathname === props.to
+              route.location.pathname.startsWith(props.to)
                 ? 'primary'
                 : undefined
             }

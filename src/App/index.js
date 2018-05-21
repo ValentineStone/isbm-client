@@ -2,6 +2,7 @@ import React from 'react'
 import { Redirect, Route, Switch } from 'react-router'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core/styles'
 
 import Translated from '~/containers/Translated'
 
@@ -11,13 +12,18 @@ import AppContent from './AppContent'
 import AppWrapper from './AppWrapper'
 import LoginForm from '~/containers/LoginForm'
 
-import UnknownView from '~/containers/views/Unknown'
-import DevelopmentView from '~/containers/views/Development'
+import UnknownView from '~/containers/views/UnknownView'
+import DevelopmentView from '~/containers/views/DevelopmentView'
+import ClientsView from '~/containers/views/ClientsView'
+import ProfileView from '~/containers/views/ProfileView'
 
-function App(props) {
+let App = function App(props) {
   return (
     <AppWrapper theme={props.theme}>
-      <AppHeader showDev={!props.user.guest} />
+      <AppHeader
+        showDev={!props.user.guest}
+        navigationVisible={Boolean(props.user.username)}
+      />
       {!props.user.username
         ? <LoginForm />
         : <>
@@ -25,6 +31,8 @@ function App(props) {
           <AppContent>
             <Switch>
               <Route path="/development" component={DevelopmentView} />
+              <Route path="/clients" component={ClientsView} />
+              <Route path="/profile" component={ProfileView} />
               <Route component={UnknownView} />
             </Switch>
           </AppContent>
@@ -34,8 +42,13 @@ function App(props) {
   )
 }
 
+const styles = {
+  loginForm: {
+    marginTop: '.5em'
+  }
+}
 
-
+App = withStyles(styles)(App)
 
 
 import { connect } from 'react-redux'
