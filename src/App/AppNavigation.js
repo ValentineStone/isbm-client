@@ -22,13 +22,15 @@ import IconLink from '~/components/IconLink'
 import TextLink from '~/components/TextLink'
 import Translated from '~/containers/Translated'
 
+import cx from '~/utils/cx'
+
 class AppNavigation extends React.PureComponent {
   render() {
     return (
       <AppBar
         position="sticky"
         color="default"
-        className={this.props.classes.appbar}
+        className={this.props.className}
       >
         <Grid container className={this.props.classes.toolbar}>
           <Grid item>
@@ -76,9 +78,6 @@ const styles = {
   },
   toolbar: {
     padding: '0 1em'
-  },
-  appbar: {
-    zIndex: 1099
   }
 }
 

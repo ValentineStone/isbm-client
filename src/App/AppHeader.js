@@ -16,6 +16,7 @@ import { withStyles } from '@material-ui/core/styles'
 import IconLink from '~/components/IconLink'
 import Translated from '~/containers/Translated'
 
+import cx from '~/utils/cx'
 
 const titleElement = document.querySelector('title')
 
@@ -27,12 +28,12 @@ const debugHitboxToggle = () => {
     localStorage.setItem('debuggingHitboxes', 'false')
   }
   else {
-    debugStylesheet.innerHTML = '* {border: 1px solid rgba(0,0,0,.1);}'
+    debugStylesheet.innerHTML = '* {outline: 1px solid rgba(127,127,127,.5);}'
     localStorage.setItem('debuggingHitboxes', 'true')
   }
 }
 if (localStorage.getItem('debuggingHitboxes') === 'true')
-  debugHitboxToggle()
+  debugStylesheet.innerHTML = '* {outline: 1px solid rgba(127,127,127,.5);}'
 
 let AppHeader
 AppHeader = function AppHeader(props) {
@@ -40,7 +41,7 @@ AppHeader = function AppHeader(props) {
     <AppBar
       position="static"
       color="default"
-      className={props.classes.appBar}
+      className={cx(props.classes.appBar, props.className)}
       elevation={props.navigationVisible ? 0 : undefined}
     >
       <Toolbar>
@@ -70,7 +71,8 @@ AppHeader = function AppHeader(props) {
 const styles = {
   appBar: {
     opacity: .95,
-    position: 'relative'
+    position: 'relative',
+    zIndex: 1101
   },
   appTitle: {
     flex: 1

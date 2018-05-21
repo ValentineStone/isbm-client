@@ -34,51 +34,13 @@ const list = [{
   id: String(Math.random()),
   fullname: 'Painkie Pie',
   latestOrder: '02.05.2018 Mirror framed with pink'
-}, {
-  id: String(Math.random()),
-  fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
-}, {
-  id: String(Math.random()),
-  fullname: 'Leonid Valentine Olegovich Romanovsky',
-  latestOrder: '28.04.2018 Print of Twilight Sparkle, Rarity & Applejack, heavy metal frame'
-}, {
-  id: String(Math.random()),
-  fullname: 'Vegtam Rainbow',
-  latestOrder: '21.04.2018 Print of family'
-}, {
-  id: String(Math.random()),
-  fullname: 'Painkie Pie',
-  latestOrder: '02.05.2018 Mirror framed with pink'
-}, {
-  id: String(Math.random()),
-  fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
-}, {
-  id: String(Math.random()),
-  fullname: 'Leonid Valentine Olegovich Romanovsky',
-  latestOrder: '28.04.2018 Print of Twilight Sparkle, Rarity & Applejack, heavy metal frame'
-}, {
-  id: String(Math.random()),
-  fullname: 'Vegtam Rainbow',
-  latestOrder: '21.04.2018 Print of family'
-}, {
-  id: String(Math.random()),
-  fullname: 'Painkie Pie',
-  latestOrder: '02.05.2018 Mirror framed with pink'
-}, {
-  id: String(Math.random()),
-  fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
-}, {
-  id: String(Math.random()),
-  fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
-}, {
-  id: String(Math.random()),
-  fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
 }]
+for (let i = 0; i < 10; i++)
+  list.push({
+    id: String(Math.random()),
+    fullname: 'Customer ' + i,
+    latestOrder: 'Order ' + i
+  })
 
 function ClientsView(props) {
   return (
@@ -90,9 +52,9 @@ function ClientsView(props) {
         const editorVisible = props.width !== 'xs' || selectedId
         const EditorBase = props.width === 'xs' ? 'div' : Paper
         return (
-          <Grid container spacing={8} wrap="nowrap">
+          <div className={props.classes.root}>
             {listVisible &&
-              <Grid item className={props.classes.listColumn}>
+              <div className={props.classes.listColumn}>
                 <RecordList
                   ListProps={{ disablePadding: true }}
                   primaryKey="fullname"
@@ -101,11 +63,12 @@ function ClientsView(props) {
                   active={match && match.params.id}
                   onSelected={id => history.push(`/clients/${id}`)}
                 />
-              </Grid>
+              </div>
             }
             {editorVisible &&
-              <Grid item className={props.classes.editorColumn} zeroMinWidth /*style={{ marginLeft: 300 }}*/>
+              <div className={props.classes.editorColumn}>
                 <EditorBase className={props.classes.editorPaper}>
+                  <div style={{ background: 'red', height: 1500 }} />
                   {!listVisible &&
                     <Button to="/clients" component={Link}>
                       Back to list
@@ -120,13 +83,13 @@ function ClientsView(props) {
                     : (
                       <Typography variant="display1">
                         Select an item
-                    </Typography>
+                      </Typography>
                     )
                   }
                 </EditorBase>
-              </Grid>
+              </div>
             }
-          </Grid>
+          </div>
         )
       }}
     </Route>
@@ -134,24 +97,29 @@ function ClientsView(props) {
 }
 
 const styles = theme => ({
-  listColumn: {
-    maxWidth: 300,
-    width: '100%',
-    /*
-    position: 'fixed',
-    top: 112,
-    left: 0,
-    maxHeight: 'calc(100% - 112px)',
+  root: {
+    position: 'relative',
+    height: '100%',
+    maxHeight: '100%',
     overflow: 'auto',
-    */
+  },
+  listColumn: {
+    width: '100%',
+    maxWidth: 300,
+    position: 'absolute',
+    maxHeight: '100%',
+    overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%'
     }
   },
   editorColumn: {
-    flex: 1,
+    marginLeft: 300,
+    maxHeight: '100%',
+    overflow: 'auto',
     [theme.breakpoints.down('xs')]: {
-      width: '100%'
+      width: '100%',
+      marginLeft: 'unset',
     }
   },
   editorPaper: {
