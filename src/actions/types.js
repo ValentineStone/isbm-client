@@ -4,9 +4,6 @@ const createAsyncType = supertype => ({
   FAILURE: supertype + '_FAILURE',
 })
 
-export const APP_INITIALIZE_START = 'APP_INITIALIZE_START'
-export const APP_INITIALIZE_FINISH = 'APP_INITIALIZE_FINISH'
-
 export const UNIDENTIFIED_ERROR = 'UNIDENTIFIED_ERROR'
 export const DUMMY_ACTION = 'DUMMY_ACTION'
 

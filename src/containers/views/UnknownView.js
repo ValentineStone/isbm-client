@@ -30,7 +30,6 @@ function Unknown(props) {
           <Typography variant="subheading">
             {t`This page does not exist, our staff is on the case`}
           </Typography>
-          {new Array(55).fill(0).map((v, i) => <br key={i} />)}
         </>
       }
     </Translated>

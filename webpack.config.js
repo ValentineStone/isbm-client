@@ -57,6 +57,7 @@ module.exports = {
   plugins: [
     new HtmlWebPackPlugin({
       template: './index.html',
+      favicon: path.join(srcDir, 'assets/picture-frame.svg'),
       inject: false
     })
   ]

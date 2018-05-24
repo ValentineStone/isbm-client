@@ -18,32 +18,33 @@ import { importLang } from '~/langs'
 import App from '~/App'
 import RouteContext from '~/context/RouteContext'
 
+import favicon from '~/assets/picture-frame-blue-128.png'
+
+document.head.innerHTML += `<link rel="shortcut icon" type="image/png" href="${favicon}"/>`
+
 const store = createStore(
   rootReducer,
   applyMiddleware(thunkMiddleware, loggerMiddleware)
 )
 
-const renderApp = () => {
-  ReactDOM.render(
-    <Provider store={store}>
-      <BrowserRouter>
-        <Route>
-          {route => (
-            <RouteContext.Provider value={route}>
-              <Route component={App}/>
-            </RouteContext.Provider>
-          )}
-        </Route>
-      </BrowserRouter>
-    </Provider>,
-    document.querySelector('#app')
-  )
-}
+ReactDOM.render(
+  <Provider store={store}>
+    <BrowserRouter>
+      <Route>
+        {route => (
+          <RouteContext.Provider value={route}>
+            <Route component={App} />
+          </RouteContext.Provider>
+        )}
+      </Route>
+    </BrowserRouter>
+  </Provider>,
+  document.querySelector('#app')
+)
 
 store.dispatch(initializeApp({
   i18nOptions: {
     importLang,
     defaultLang: 'en'
-  },
-  onAppInitialized: renderApp
+  }
 }))

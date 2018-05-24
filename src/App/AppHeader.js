@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 
 import DebugIcon from '@material-ui/icons/BugReport'
 import InvertColorsIcon from '@material-ui/icons/InvertColors'
@@ -44,7 +45,11 @@ AppHeader = function AppHeader(props) {
       className={cx(props.classes.appBar, props.className)}
       elevation={props.navigationVisible ? 0 : undefined}
     >
-      <Toolbar>
+      <Grid
+        container
+        alignItems="center"
+        className={props.classes.toolbar}
+      >
         <Typography
           className={props.classes.appTitle}
           variant="display1"
@@ -63,19 +68,21 @@ AppHeader = function AppHeader(props) {
         <IconLink Icon={TranslateIcon} onClick={props.onToggleLang} />
         <IconLink Icon={InvertColorsIcon} onClick={props.onToggleTheme} />
         <IconLink Icon={DebugIcon} onClick={debugHitboxToggle} />
-      </Toolbar>
+      </Grid>
     </AppBar>
   )
 }
 
 const styles = {
   appBar: {
-    opacity: .95,
     position: 'relative',
     zIndex: 1101
   },
   appTitle: {
     flex: 1
+  },
+  toolbar: {
+    padding: '0 8px 0 16px'
   }
 }
 

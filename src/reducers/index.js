@@ -10,6 +10,7 @@ import {
   TRANSLATE,
   AUTHENTICATE_USER,
   LOG_OUT_USER,
+  INITIALIZE_APP,
 } from '~/actions/types'
 
 export const stateWithInitialStatus = (...keys) => {
@@ -74,6 +75,12 @@ const rootReducer = combineReducers({
       default:
         return state
     }
+  },
+  initialized(state = false, action) {
+    if (action.type === INITIALIZE_APP.SUCCESS)
+      return true
+    else
+      return state
   }
 })
 

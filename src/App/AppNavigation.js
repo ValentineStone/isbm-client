@@ -32,7 +32,11 @@ class AppNavigation extends React.PureComponent {
         color="default"
         className={this.props.className}
       >
-        <Grid container className={this.props.classes.toolbar}>
+        <Grid
+          container
+          className={this.props.classes.toolbar}
+          justify={this.props.width === 'xs' ? 'center' : undefined}
+        >
           <Grid item>
             <IconLink Icon={ReceiptIcon} to="/orders" />
             {/*<IconLink Icon={ProductsIcon} to="/products" />*/}
@@ -73,11 +77,8 @@ const styles = {
     width: 'unset',
     flex: 1
   },
-  welcome: {
-    marginRight: '.5em'
-  },
   toolbar: {
-    padding: '0 1em'
+    padding: '0 8px'
   }
 }
 

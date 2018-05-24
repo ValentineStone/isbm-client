@@ -18,53 +18,38 @@ import ClientsView from '~/containers/views/ClientsView'
 import ProfileView from '~/containers/views/ProfileView'
 
 let App = function App(props) {
+  if (!props.initialized)
+    return null
   return (
     <AppWrapper theme={props.theme}>
-      <div className={props.classes.appRoot}>
-        <AppHeader
-          className={props.classes.appHeader}
-          showDev={!props.user.guest}
-          navigationVisible={Boolean(props.user.username)}
+      <AppHeader
+        showDev={!props.user.guest}
+        navigationVisible={Boolean(props.user.username)}
+      />
+      {props.user.username &&
+        <AppNavigation
+          user={props.user}
+          logOutUser={props.logOutUser}
         />
-        {props.user.username &&
-          <AppNavigation
-            user={props.user}
-            logOutUser={props.logOutUser}
-          />
-        }
-        <main className={props.classes.appContent}>
-          {!props.user.username
-            ? <LoginForm />
-            : (
-              <Switch>
-                <Route path="/development" component={DevelopmentView} />
-                <Route path="/clients" component={ClientsView} />
-                <Route path="/profile" component={ProfileView} />
-                <Route component={UnknownView} />
-              </Switch>
-            )
-          }
-        </main>
-      </div>
+      }
+      {!props.user.username
+        ? <LoginForm />
+        : (
+          <Switch>
+            <Route path="/development" component={DevelopmentView} />
+            <Route path="/clients" component={ClientsView} />
+            <Route path="/profile" component={ProfileView} />
+            <Route component={UnknownView} />
+          </Switch>
+        )
+      }
     </AppWrapper >
   )
 }
 
 const styles = {
-  appHeader: {
-    display: 'table-row',
-    border: '3px solid yellow'
-  },
   appContent: {
-    display: 'table-row',
-    height: '100%',
-    border: '3px solid red'
-  },
-  appRoot: {
-    display: 'table',
-    width: '100%',
-    height: '100%',
-    border: '3px solid purple'
+    padding: '0 1em'
   }
 }
 
@@ -75,7 +60,11 @@ import { connect } from 'react-redux'
 import logOutUser from '~/actions/logOutUser'
 
 function mapStateToProps(state) {
-  return { theme: state.theme, user: state.user }
+  return {
+    theme: state.theme,
+    user: state.user,
+    initialized: state.initialized
+  }
 }
 
 export default connect(
