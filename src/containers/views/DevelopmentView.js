@@ -2,13 +2,18 @@ import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
 import withWidth from '@material-ui/core/withWidth'
+import { withTheme } from '@material-ui/core/styles'
+
+import Inspector from '~/components/Inspector'
 
 function Development(props) {
   return (
-    <Typography variant="display4">
-      {props.width}
-    </Typography>
+    <Inspector data={props.theme} expandLevel={4} />
   )
 }
 
-export default withWidth()(Development)
+export default withWidth()(
+  withTheme()(
+    Development
+  )
+)

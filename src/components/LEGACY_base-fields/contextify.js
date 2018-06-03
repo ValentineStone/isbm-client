@@ -22,7 +22,7 @@ export const withNameConsumer = () => Component => {
       return <Component {...props} ref={ref} />
   }
   HOC.displayName = `WithNameConsumer(${displayNameOf(Component)})`
-  
+
   const refHOC = React.forwardRef(HOC)
   refHOC.displayName = HOC.displayName
   return refHOC
@@ -33,14 +33,14 @@ export const withParentConsumer = () => Component => {
     if (props.parent === undefined)
       return (
         <ParentContext.Consumer>
-          {parent => <Component {...props} parent={parent} ref={ref} />}
+          {({ parent }) => <Component {...props} parent={parent} ref={ref} />}
         </ParentContext.Consumer>
       )
     else
       return <Component {...props} ref={ref} />
   }
   HOC.displayName = `WithParentConsumer(${displayNameOf(Component)})`
-  
+
   const refHOC = React.forwardRef(HOC)
   refHOC.displayName = HOC.displayName
   return refHOC
@@ -64,7 +64,7 @@ export const asParentProvider = () => Component => {
   class AsParentProvider extends Component {
     render() {
       return (
-        <ParentContext.Provider value={this}>
+        <ParentContext.Provider value={{ parent: this }}>
           {super.render()}
         </ParentContext.Provider>
       )
@@ -94,7 +94,7 @@ export const asParentAndNamePerChildProvider = () => Component => {
   class AsParentAndNamePerChildProvider extends Component {
     render() {
       return (
-        <ParentContext.Provider value={this}>
+        <ParentContext.Provider value={{ parent: this }}>
           {super.render()}
         </ParentContext.Provider>
       )

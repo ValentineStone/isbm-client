@@ -1,7 +1,7 @@
 import React from 'react'
 
-import TextField from './fields/TextField'
-import ObjectField from './fields/ObjectField'
+import { Form } from 'react-form'
+import TextField from './form/TextField'
 import FormBase from './FormBase'
 import Translated from '~/containers/Translated'
 import Button from '@material-ui/core/Button'
@@ -12,10 +12,9 @@ let LoginForm
 LoginForm = class LoginForm extends React.PureComponent {
   state = {}
   value = React.createRef()
-  onSubmit = async e => {
-    e.preventDefault()
+  onSubmit = async values => {
     if (this.props.onSubmit) {
-      let result = await this.props.onSubmit(this.value.current.getValue())
+      let result = await this.props.onSubmit(values)
       if (result instanceof Error)
         this.setState({ error: result.message })
     }
@@ -25,29 +24,40 @@ LoginForm = class LoginForm extends React.PureComponent {
     return (
       <Translated>
         {t =>
-          <FormBase
-            {...formProps}
-            underlay={this.props.width !== 'xs'}
-            title={t`Please sign in`}
-            onSubmit={this.onSubmit}
-          >
-            {this.state.error &&
-              <FormHelperText error>
-                {t(this.state.error)}
-              </FormHelperText>
+          <Form preventDefault onSubmit={this.onSubmit}>
+            {formApi =>
+              <FormBase
+                {...formProps}
+                underlay={this.props.width !== 'xs'}
+                title={t`Please sign in`}
+                onSubmit={formApi.submitForm}
+              >
+                {this.state.error &&
+                  <FormHelperText error>
+                    {t(this.state.error)}
+                  </FormHelperText>
+                }
+                <TextField
+                  field="username"
+                  fullWidth
+                  label={t`Username`}
+                />
+                <TextField
+                  field="password"
+                  fullWidth
+                  label={t`Password`}
+                  type="password"
+                />
+                <Button
+                  fullWidth
+                  color="primary"
+                  type="submit"
+                >
+                  {t`Sign in`}
+                </Button>
+              </FormBase>
             }
-            <ObjectField ref={this.value}>
-              <TextField name="username" label={t`Username`} />
-              <TextField name="password" label={t`Password`} type="password" />
-            </ObjectField>
-            <Button
-              fullWidth
-              color="primary"
-              type="submit"
-            >
-              {t`Sign in`}
-            </Button>
-          </FormBase>
+          </Form>
         }
       </Translated>
     )

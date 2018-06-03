@@ -1,7 +1,10 @@
 import React from 'react'
 
-import { Link, Route, Redirect } from 'react-router-dom'
+import { Link, Route, Redirect, withRouter } from 'react-router-dom'
 
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -16,36 +19,56 @@ import withWidth from '@material-ui/core/withWidth'
 import { withStyles } from '@material-ui/core/styles'
 
 import ClientsIcon from '@material-ui/icons/Group'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+
+import queryString from 'query-string'
+import escapeStringRegexp from 'escape-string-regexp'
 
 import Translated from '~/containers/Translated'
 import RecordList from '~/components/RecordList'
 
+import RecordEditor from '~/components/RecordEditor'
+
 const list = [{
-  id: String(Math.random()),
+  id: '384902mfck2ojwdefgdec',
   fullname: 'Jhon Bob Smith',
-  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy'
+  latestOrder: '12.02.2018 Blue frame with pink flowers, Rainbow Dash, Pinkipe Pie, Fluttershy',
+  secrectData: 'this is secret information',
+  additinalData: '557575-34'
 }, {
-  id: String(Math.random()),
+  id: '234u98nyuqwdeohfhu82t',
   fullname: 'Leonid Valentine Olegovich Romanovsky',
   latestOrder: '28.04.2018 Print of Twilight Sparkle, Rarity & Applejack, heavy metal frame'
 }, {
-  id: String(Math.random()),
+  id: '3940tucv9iweqrjfciwe',
   fullname: 'Vegtam Rainbow',
   latestOrder: '21.04.2018 Print of family'
 }, {
-  id: String(Math.random()),
+  id: 'f543902-c3eujgiwef09g',
   fullname: 'Painkie Pie',
-  latestOrder: '02.05.2018 Mirror framed with pink'
+  latestOrder: '02.05.2018 Mirror\t framed with pink'
 }]
-for (let i = 0; i < 10; i++)
+for (let i = 0; i < 30; i++)
   list.push({
-    id: String(Math.random()),
+    id: 'customer[' + i + ']',
     fullname: 'Customer ' + i,
     latestOrder: 'Order ' + i
   })
 
 class ClientsView extends React.Component {
-  state = { filter: '' }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.search === nextProps.location.search)
+      return null
+    else
+      return {
+        search: nextProps.location.search,
+        searchParsed: queryString.parse(nextProps.location.search)
+      }
+  }
+  constructor(props) {
+    super(props)
+    this.state = { filter: queryString.parse(props.location.search).filter || '' }
+  }
   render() {
     return (
       <Route path="/clients/:id">
@@ -56,47 +79,59 @@ class ClientsView extends React.Component {
           const editorVisible = this.props.width !== 'xs' || selectedId
           const listHeaderVisible = this.props.width !== 'xs' && listVisible
           const EditorBase = this.props.width === 'xs' ? 'div' : Paper
+          const regExp = new RegExp(escapeStringRegexp(this.state.filter), 'i')
           return (
             <div className={this.props.classes.root}>
               {listHeaderVisible &&
-                <AppBar
+                <Paper
                   position="static"
                   color="default"
                   elevation={0}
                   className={this.props.classes.listHeader}
                 >
-                  <Typography variant="display1">
-                    Clients
+                  <Typography variant="subheading" color="secondary">
+                    <Translated>app.name</Translated>
                   </Typography>
-                </AppBar>
+                </Paper>
               }
               {listVisible &&
                 <div className={this.props.classes.listColumn}>
-                  <Paper style={{ position: 'sticky', top: 0, padding: 16, zIndex: 1 }}>
-                    <TextField
-                      placeholder="Search"
-                      fullWidth
-                      value={this.state.filter}
-                      onInput={(e) => {
-                        this.setState({ filter: e.target.value })
+                  <div>
+                    <Paper style={{ padding: 16, position: 'relative', zIndex: 1 }} square>
+                      <TextField
+                        placeholder="Search"
+                        fullWidth
+                        value={this.state.filter}
+                        onInput={(e) => {
+                          this.setState({ filter: e.target.value })
+                          this.state.searchParsed.filter = e.target.value
+                          this.props.history.push('?' + queryString.stringify(this.state.searchParsed))
+                        }}
+                      />
+                    </Paper>
+                  </div>
+                  <div className={this.props.classes.listColumnFlexItem}>
+                    <RecordList
+                      ListProps={{ disablePadding: true }}
+                      primaryKey="fullname"
+                      secondaryKey="latestOrder"
+                      records={
+                        this.state.filter && regExp
+                          ? list.filter(v =>
+                            v.fullname.match(regExp)
+                            || v.latestOrder.match(regExp)
+                          )
+                          : list
+                      }
+                      active={match && match.params.id}
+                      onRecordClick={id => {
+                        if (id === selectedId)
+                          history.push(`/clients`)
+                        else
+                          history.push(`/clients/${id}`)
                       }}
                     />
-                  </Paper>
-                  <RecordList
-                    ListProps={{ disablePadding: true }}
-                    primaryKey="fullname"
-                    secondaryKey="latestOrder"
-                    records={
-                      this.state.filter
-                        ? list.filter(v =>
-                          v.fullname.match(new RegExp(this.state.filter, 'i'))
-                          || v.latestOrder.match(new RegExp(this.state.filter, 'i'))
-                        )
-                        : list
-                    }
-                    active={match && match.params.id}
-                    onSelected={id => history.push(`/clients/${id}`)}
-                  />
+                  </div>
                 </div>
               }
               {editorVisible &&
@@ -109,9 +144,18 @@ class ClientsView extends React.Component {
                     }
                     {selectedItem
                       ? (
-                        <Typography component="pre" style={{ overflow: 'auto' }}>
-                          {JSON.stringify(selectedItem, null, 2)}
-                        </Typography>
+                        <RecordEditor
+                          value={selectedItem}
+                        >
+                          {[
+                            ['fullname', { label: 'Full name' }],
+                            ['latestOrder', { label: 'Latest order' }],
+                            ['id', { label: 'ID' }],
+                            <Button fullWidth size="small" to={`/orders/&{selectedItem.id}`} component={Link}>
+                              To order
+                            </Button>
+                          ]}
+                        </RecordEditor>
                       )
                       : selectedId
                         ? (
@@ -142,6 +186,7 @@ const styles = theme => {
       width: '100%',
       maxWidth: 300,
       overflowY: 'auto',
+      display: 'flex',
       flexDirection: 'column',
       [theme.breakpoints.down('xs')]: {
         maxWidth: '100%'
@@ -150,16 +195,16 @@ const styles = theme => {
         position: 'fixed',
         bottom: 0,
         top: 96,
-      }
+      },
     },
     listHeader: {
       position: 'fixed',
       top: 48,
       width: 300,
       height: 48,
+      display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 'unset',
+      justifyContent: 'center'
     },
     editorColumn: {
       marginLeft: 300,
@@ -171,13 +216,36 @@ const styles = theme => {
     },
     editorPaper: {
       padding: 16
+    },
+    listColumnFlexItem: {
+      flex: 1,
+      overflow: 'auto',
+      /*
+      '&::-webkit-scrollbar': {
+        width: 10,
+      },
+      '&::-webkit-scrollbar-track:hover': {
+        background: 'rgba(0,0,0,.1)',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: 'rgba(0,0,0,.25)',
+      }
+      */
     }
   }
   if (theme.palette.type === 'light') {
-    styles.listColumn.borderRight = '1px solid #ccc'
-    styles.listHeader.borderRight = '1px solid #ccc'
+    //styles.listColumn.borderRight = '1px solid #ccc'
+    //styles.listHeader.borderRight = '1px solid #ccc'
   }
   return styles
 }
 
-export default withStyles(styles)(withWidth()(ClientsView))
+export default (
+  withStyles(styles)(
+    withWidth()(
+      withRouter(
+        ClientsView
+      )
+    )
+  )
+)

@@ -1,24 +1,30 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 
-import { WithRoute } from '~/context/RouteContext'
+import RouteContext from '~/context/RouteContext'
+import pure from '~/utils/pure'
 
-export default function IconLink({ Icon, IconProps, ...props }) {
+function IconLink({
+  Icon,
+  IconProps,
+  activeColor = 'primary',
+  ...props
+}) {
   if (props.to) return (
     <IconButton {...props} component={Link}>
-      <WithRoute>
+      <RouteContext.Consumer>
         {route =>
           <Icon
             color={
               route.location.pathname.startsWith(props.to)
-                ? 'primary'
+                ? activeColor
                 : undefined
             }
             {...IconProps}
           />
         }
-      </WithRoute>
+      </RouteContext.Consumer>
     </IconButton>
   )
   else return (
@@ -27,3 +33,5 @@ export default function IconLink({ Icon, IconProps, ...props }) {
     </IconButton>
   )
 }
+
+export default IconLink

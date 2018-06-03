@@ -5,8 +5,7 @@ import displayNameOf from '~/utils/displayNameOf'
 const RouteContext = React.createContext(null)
 
 export default RouteContext
-export const WithRoute = RouteContext.Consumer
-export const withRoute = () => Component => {
+export const withRouteContextConsumer = () => Component => {
   const HOC = props => (
     <RouteContext.Consumer>
       {route => <Component {...props} route={route} />}

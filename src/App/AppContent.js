@@ -1,6 +1,5 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { WithRoute } from '~/context/RouteContext'
 
 function AppContent({ classes, ...props }) {
   return (

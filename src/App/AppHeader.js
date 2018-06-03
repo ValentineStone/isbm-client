@@ -21,7 +21,7 @@ import cx from '~/utils/cx'
 
 const titleElement = document.querySelector('title')
 
-
+/*
 const debugStylesheet = document.head.querySelector('#debug-stylesheet')
 const debugHitboxToggle = () => {
   if (localStorage.getItem('debuggingHitboxes') === 'true') {
@@ -35,6 +35,7 @@ const debugHitboxToggle = () => {
 }
 if (localStorage.getItem('debuggingHitboxes') === 'true')
   debugStylesheet.innerHTML = '* {outline: 1px solid rgba(127,127,127,.5);}'
+*/
 
 let AppHeader
 AppHeader = function AppHeader(props) {
@@ -52,7 +53,8 @@ AppHeader = function AppHeader(props) {
       >
         <Typography
           className={props.classes.appTitle}
-          variant="display1"
+          color="secondary"
+          variant="headline"
         >
           <Translated>
             {t => {
@@ -67,16 +69,17 @@ AppHeader = function AppHeader(props) {
         {props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
         <IconLink Icon={TranslateIcon} onClick={props.onToggleLang} />
         <IconLink Icon={InvertColorsIcon} onClick={props.onToggleTheme} />
-        <IconLink Icon={DebugIcon} onClick={debugHitboxToggle} />
+        {/*<IconLink Icon={DebugIcon} onClick={debugHitboxToggle} />*/}
       </Grid>
     </AppBar>
   )
 }
 
-const styles = {
+const styles = theme => ({
   appBar: {
     position: 'relative',
-    zIndex: 1101
+    zIndex: 1101,
+    background: theme.palette.background.paper
   },
   appTitle: {
     flex: 1
@@ -84,7 +87,7 @@ const styles = {
   toolbar: {
     padding: '0 8px 0 16px'
   }
-}
+})
 
 AppHeader = withStyles(styles)(withWidth()(AppHeader))
 

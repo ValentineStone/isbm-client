@@ -2,7 +2,7 @@ import React from 'react'
 import ArrayFieldBase from '../base-fields/ArrayField'
 import contextify from '../base-fields/contextify'
 
-import ListItem from '@material-ui/core/List'
+import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'

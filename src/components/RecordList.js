@@ -1,73 +1,109 @@
 import React from 'react'
 
-import { Link, Route } from 'react-router-dom'
-
+import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import ListSubheader from '@material-ui/core/ListSubheader'
 import ListItemText from '@material-ui/core/ListItemText'
+import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
-import ClientsIcon from '@material-ui/icons/Group'
+import cx from '~/utils/cx'
 
-import Translated from '~/containers/Translated'
-
-function RecordList(props) {
-  const activeProps = {
-    variant: 'raised',
-    color: 'primary',
-    ...props.ActiveListItemProps
-  }
-  return (
-    <List {...props.ListProps}>
-      {props.records.map((record, index, array) => {
-        const id = record[props.idKey] || record.id
-        const isActive = Array.isArray(props.active)
-          ? props.active.includes(id)
-          : props.active === id
-        const textClass = isActive
-          ? props.classes.listItemTextSelected
-          : props.classes.listItemText
-        const onRecordClick = (...args) => {
-          if (props.ListItemProps && props.ListItemProps.onClick)
-            props.ListItemProps.onClick(...args)
-          if (props.onSelected)
-            props.onSelected(id, record, index, array)
+class RecordList extends React.PureComponent {
+  render() {
+    const activeProps = {
+      //variant: 'raised',
+      color: 'primary',
+      ...this.props.ActiveListItemProps
+    }
+    return (
+      <div
+        className={cx(this.props.classes.root, this.props.className)}
+        style={this.props.style}
+      >
+        {React.Children.count(this.props.children)
+          ? (
+            <Paper
+              className={this.props.classes.children}
+              {...this.props.ChildrenPaperProps}
+            >
+              {this.props.children}
+            </Paper>
+          )
+          : null
         }
-        return (
-          <ListItem
-            key={id}
-            component={Button}
-            {...(isActive && activeProps)}
-            {...props.ListItemProps}
-            onClick={onRecordClick}
-          >
-            <ListItemText
-              primary={record[props.primaryKey]}
-              secondary={record[props.secondaryKey]}
-              classes={{ primary: textClass, secondary: textClass }}
-            />
-          </ListItem>
-        )
-      })}
-    </ List>
-  )
+        <List
+          className={this.props.classes.list}
+          {...this.props.ListProps}
+          style={{ overflow: 'auto' }}
+        >
+          {this.props.records.map((record, index, array) => {
+            const id = record[this.props.idKey] || record.id
+            const isActive = Array.isArray(this.props.active)
+              ? this.props.active.includes(id)
+              : this.props.active === id
+            const onRecordClick = (...args) => {
+              if (this.props.ListItemProps && this.props.ListItemProps.onClick)
+                this.props.ListItemProps.onClick(...args)
+              if (this.props.onRecordClick)
+                this.props.onRecordClick(id, record, index, array)
+            }
+            return (
+              <ListItem
+                key={id}
+                component={Button}
+                {...this.props.ListItemProps}
+                {...(isActive && activeProps)}
+                onClick={onRecordClick}
+              >
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography
+                      noWrap
+                      color="inherit"
+                      variant="subheading"
+                      className={this.props.classes.listItemText}
+                    >
+                      {record[this.props.primaryKey]}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography
+                      noWrap
+                      color="inherit"
+                      variant="body1"
+                      className={this.props.classes.listItemText}
+                    >
+                      {record[this.props.secondaryKey]}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            )
+          })}
+        </ List>
+      </div>
+    )
+  }
 }
 
 
 const styles = {
   listItemText: {
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
     textTransform: 'none'
   },
-  listItemTextSelected: {
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textTransform: 'none',
-    color: 'white'
+  children: {
+    padding: 16
+  },
+  root: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  list: {
+    flex: 1
   }
 }
 

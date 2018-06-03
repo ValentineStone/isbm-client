@@ -23,7 +23,7 @@ let App = function App(props) {
   return (
     <AppWrapper theme={props.theme}>
       <AppHeader
-        showDev={!props.user.guest}
+        showDev={props.user.username}
         navigationVisible={Boolean(props.user.username)}
       />
       {props.user.username &&

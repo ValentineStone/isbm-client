@@ -30,7 +30,7 @@ class AppNavigation extends React.PureComponent {
       <AppBar
         position="sticky"
         color="default"
-        className={this.props.className}
+        className={this.props.classes.appBar}
       >
         <Grid
           container
@@ -72,14 +72,17 @@ class AppNavigation extends React.PureComponent {
   }
 }
 
-const styles = {
+const styles = theme => ({
   userControls: {
     width: 'unset',
     flex: 1
   },
   toolbar: {
     padding: '0 8px'
+  },
+  appBar: {
+    background: theme.palette.background.paper
   }
-}
+})
 
 export default withStyles(styles)(withWidth()(AppNavigation))

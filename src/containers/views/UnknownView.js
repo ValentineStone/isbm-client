@@ -15,7 +15,12 @@ function Unknown(props) {
     <Translated>
       {t =>
         <>
-          <Typography variant="display1">
+          <Typography
+            variant="display1"
+            align="center"
+            gutterBottom
+            style={{ marginTop: 16 }}
+          >
             {t`Error`} 404:
           </Typography>
           <Typography
@@ -24,10 +29,13 @@ function Unknown(props) {
                 ? 'display3'
                 : 'display4'
             }
+            align="center"
+            gutterBottom
+            color="secondary"
           >
-            {pageName}
+            {t(pageName)}
           </Typography>
-          <Typography variant="subheading">
+          <Typography variant="subheading" align="center">
             {t`This page does not exist, our staff is on the case`}
           </Typography>
         </>

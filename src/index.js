@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom'
 
 import { BrowserRouter, Route } from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux'
-import { Provider } from 'react-redux'
+import { Provider as ReduxProvider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import loggerMiddleware from '~/utils/redux-logger'
 
@@ -28,7 +28,7 @@ const store = createStore(
 )
 
 ReactDOM.render(
-  <Provider store={store}>
+  <ReduxProvider store={store}>
     <BrowserRouter>
       <Route>
         {route => (
@@ -38,7 +38,7 @@ ReactDOM.render(
         )}
       </Route>
     </BrowserRouter>
-  </Provider>,
+  </ReduxProvider>,
   document.querySelector('#app')
 )
 

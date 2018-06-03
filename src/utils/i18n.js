@@ -37,7 +37,7 @@ export default class I18n extends EventEmmiter {
     allowNestedPaths = false,
     fallbackOnDefaultLang = true,
     prefixUnknownPaths = false,
-    setHTMLLangAttribute = true,
+    setHTMLLangAttribute = false,
     onReady
   }) {
     super()

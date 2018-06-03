@@ -4,35 +4,41 @@ import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-import { WithRoute } from '~/context/RouteContext'
+import RouteContext from '~/context/RouteContext'
 
-function TextLink({ classes, underlined, ...props }) {
+function TextLink({
+  classes,
+  underlined,
+  activeColor = 'primary',
+  color: defaultColor,
+  ...props
+}) {
   if (props.to) return (
-    <WithRoute>
+    <RouteContext.Consumer>
       {route =>
         <Typography
           component={Link}
           className={!underlined ? classes.link : undefined}
           color={
             route.location.pathname === props.to
-              ? 'primary'
-              : undefined
+              ? activeColor
+              : defaultColor
           }
           {...props}
         />
       }
-    </WithRoute>
+    </RouteContext.Consumer>
   )
   else return (
     <Typography {...props} />
   )
 }
 
-const styles = theme => ({
+const styles = {
   link: {
     textDecoration: 'none'
   }
-})
+}
 
 
 export default withStyles(styles)(TextLink)
