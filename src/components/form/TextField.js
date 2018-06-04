@@ -4,6 +4,9 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
+import { withStyles } from '@material-ui/core/styles'
+import Textarea from 'react-textarea-autosize'
+import cx from '~/utils/cx'
 
 function TextField({
   onChange,
@@ -12,9 +15,12 @@ function TextField({
   label,
   validate,
   fullWidth,
+  classes,
   pure,
-  ...rest
+  multiline,
+  ...InputProps
 }) {
+  const inputComponent = multiline ? Textarea : undefined
   return (
     <Field validate={validate} field={field} pure={pure}>
       {fieldApi =>
@@ -25,6 +31,9 @@ function TextField({
           <InputLabel>{label}</InputLabel>
           <Input
             value={fieldApi.value || ''}
+            inputComponent={inputComponent}
+            {...InputProps}
+            className={cx(classes.multiline, InputProps.className)}
             onChange={(...args) => {
               const [e] = args
               fieldApi.setValue(e.target.value)
@@ -44,4 +53,12 @@ function TextField({
   )
 }
 
-export default TextField
+const styles = {
+  multiline: {
+    '& > textarea': {
+      resize: 'none'
+    }
+  }
+}
+
+export default withStyles(styles)(TextField)

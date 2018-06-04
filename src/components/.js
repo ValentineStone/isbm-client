@@ -13,7 +13,7 @@ import qs from 'qs'
 import escapeStringRegexp from 'escape-string-regexp'
 
 import Translated from '~/containers/Translated'
-import RecordList from '~/components/LongRecordList'
+import RecordList from '~/components/RecordList'
 import ClientEditor from '~/components/editors/ClientEditor'
 
 const list = [{
@@ -33,9 +33,10 @@ const list = [{
 }, {
   id: 'f543902-c3eujgiwef09g',
   fullname: 'Painkie Pie',
-  latestOrder: '02.05.2018 Mirror\t framed with pink'
+  latestOrder: '02.05.2018 Mirror\t framed\
+  with pink'
 }]
-for (let i = 0; i < 1000; i++)
+for (let i = 0; i < 30; i++)
   list.push({
     id: 'customer[' + i + ']',
     fullname: 'Customer ' + i,
@@ -109,27 +110,28 @@ class ClientsView extends React.Component {
                       />
                     </Paper>
                   </div>
-                  <RecordList
-                    ListProps={{ disablePadding: true }}
-                    className={this.props.classes.listColumnFlexItem}
-                    primaryKey="fullname"
-                    secondaryKey="latestOrder"
-                    records={
-                      this.state.filter && regExp
-                        ? list.filter(v =>
-                          v.fullname.match(regExp)
-                          || v.latestOrder.match(regExp)
-                        )
-                        : list
-                    }
-                    active={match && match.params.id}
-                    onRecordClick={({ id }) => {
-                      if (id === selectedId)
-                        history.push(`/clients`)
-                      else
-                        history.push(`/clients/${id}`)
-                    }}
-                  />
+                  <div className={this.props.classes.listColumnFlexItem}>
+                    <RecordList
+                      ListProps={{ disablePadding: true }}
+                      primaryKey="fullname"
+                      secondaryKey="latestOrder"
+                      records={
+                        this.state.filter && regExp
+                          ? list.filter(v =>
+                            v.fullname.match(regExp)
+                            || v.latestOrder.match(regExp)
+                          )
+                          : list
+                      }
+                      active={match && match.params.id}
+                      onRecordClick={({ id }) => {
+                        if (id === selectedId)
+                          history.push(`/clients`)
+                        else
+                          history.push(`/clients/${id}`)
+                      }}
+                    />
+                  </div>
                 </div>
               }
               {editorVisible &&
@@ -176,13 +178,13 @@ const styles = theme => {
       display: 'flex',
       flexDirection: 'column',
       [theme.breakpoints.down('xs')]: {
-        maxWidth: 'unset'
+        maxWidth: '100%'
       },
       [theme.breakpoints.up('sm')]: {
+        position: 'fixed',
+        bottom: 0,
+        top: 96,
       },
-      position: 'fixed',
-      bottom: 0,
-      top: 96,
     },
     listHeader: {
       position: 'fixed',
@@ -197,6 +199,7 @@ const styles = theme => {
       marginLeft: 300,
       height: 1500,
       [theme.breakpoints.down('xs')]: {
+        width: '100%',
         marginLeft: 'unset',
       }
     },
@@ -205,7 +208,7 @@ const styles = theme => {
     },
     listColumnFlexItem: {
       flex: 1,
-      display: 'flex',
+      overflow: 'auto',
       /*
       '&::-webkit-scrollbar': {
         width: 10,

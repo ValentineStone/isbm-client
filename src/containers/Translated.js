@@ -1,10 +1,19 @@
+import React from 'react'
 import { connect } from 'react-redux'
 
 function Translated(props) {
+  let translated
   if (typeof props.children === 'function')
-    return props.children(props.i18n.t, props.i18n)
+    translated = props.children(props.i18n.t, props.i18n)
   else
-    return props.i18n.t(props.children)
+    translated = props.i18n.t(props.children)
+  if (props.keyed)
+    return (
+      <React.Fragment key={props.i18n.lang}>
+        {translated}
+      </React.Fragment>
+    )
+  else return translated
 }
 
 function mapStateToProps(state) {

@@ -1,10 +1,6 @@
 import React from 'react'
-import { Redirect, Route, Switch } from 'react-router'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import { withStyles } from '@material-ui/core/styles'
 
-import Translated from '~/containers/Translated'
+import { Route, Switch } from 'react-router'
 
 import AppHeader from './AppHeader'
 import AppNavigation from './AppNavigation'
@@ -46,15 +42,6 @@ let App = function App(props) {
     </AppWrapper >
   )
 }
-
-const styles = {
-  appContent: {
-    padding: '0 1em'
-  }
-}
-
-App = withStyles(styles)(App)
-
 
 import { connect } from 'react-redux'
 import logOutUser from '~/actions/logOutUser'
