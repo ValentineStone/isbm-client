@@ -27,6 +27,7 @@
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
+    "assign-deep": "^0.4.7",
     "babel-polyfill": "^6.26.0",
     "es6-promise": "^4.2.4",
     "escape-string-regexp": "^1.0.5",
@@ -34,6 +35,7 @@
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-form": "^3.5.5",
+    "react-infinite": "^0.13.0",
     "react-inspector": "^2.3.0",
     "react-json-tree": "^0.11.0",
     "react-redux": "^5.0.7",
@@ -49,7 +51,7 @@
     "shallow-equal": "^1.0.0",
     "whatwg-fetch": "^2.0.4"
   },
-  "bannedDependencies" : {
+  "bannedDependencies": {
     "fsevents": "No-use, 84 packages every time :\\"
   }
 }

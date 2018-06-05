@@ -13,7 +13,7 @@ import qs from 'qs'
 import escapeStringRegexp from 'escape-string-regexp'
 
 import Translated from '~/containers/Translated'
-import RecordList from '~/components/LongRecordList'
+import RecordList from '~/components/InfiniteRecordList'
 import ClientEditor from '~/components/editors/ClientEditor'
 
 const list = [{
@@ -42,28 +42,17 @@ for (let i = 0; i < 1000; i++)
     latestOrder: 'Order ' + i
   })
 
-class ClientsView extends React.Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.search === nextProps.location.search)
-      return null
+let ClientsView = class ClientsView extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    const search = props.navigation.params.search || ''
+    if (search !== state.search)
+      return { search }
     else
-      return {
-        search: nextProps.location.search,
-        searchParsed: qs.parse(
-          nextProps.location.search,
-          { ignoreQueryPrefix: true }
-        )
-      }
+      return null
   }
   constructor(props) {
     super(props)
-    this.state = {
-      filter:
-        qs.parse(
-          props.location.search,
-          { ignoreQueryPrefix: true }
-        ).filter || ''
-    }
+    this.state = {}
   }
   render() {
     return (
@@ -75,7 +64,7 @@ class ClientsView extends React.Component {
           const editorVisible = this.props.width !== 'xs' || selectedId
           const listHeaderVisible = this.props.width !== 'xs' && listVisible
           const EditorBase = this.props.width === 'xs' ? 'div' : Paper
-          const regExp = new RegExp(escapeStringRegexp(this.state.filter), 'i')
+          const regExp = new RegExp(escapeStringRegexp(this.state.search), 'i')
           return (
             <div className={this.props.classes.root}>
               {listHeaderVisible &&
@@ -97,14 +86,9 @@ class ClientsView extends React.Component {
                       <TextField
                         placeholder="Search"
                         fullWidth
-                        value={this.state.filter}
+                        value={this.state.search}
                         onInput={(e) => {
-                          this.setState({ filter: e.target.value })
-                          this.state.searchParsed.filter = e.target.value
-                          const path = this.state.searchParsed.filter
-                            ? qs.stringify(this.state.searchParsed, { addQueryPrefix: true })
-                            : this.props.location.pathname
-                          this.props.history.push(path)
+                          this.props.navigate('.', { search: e.target.value || undefined })
                         }}
                       />
                     </Paper>
@@ -115,7 +99,7 @@ class ClientsView extends React.Component {
                     primaryKey="fullname"
                     secondaryKey="latestOrder"
                     records={
-                      this.state.filter && regExp
+                      this.state.search && regExp
                         ? list.filter(v =>
                           v.fullname.match(regExp)
                           || v.latestOrder.match(regExp)
@@ -226,12 +210,29 @@ const styles = theme => {
   return styles
 }
 
-export default (
-  withStyles(styles)(
-    withWidth()(
-      withRouter(
-        ClientsView
-      )
-    )
+ClientsView = withStyles(styles)(
+  withWidth()(
+    ClientsView
   )
 )
+
+
+import { connect } from 'react-redux'
+import navigate from '~/actions/navigate'
+
+function mapStateToProps(state) {
+  return {
+    navigation: state.navigation
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    navigate: (...args) => dispatch(navigate(...args))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ClientsView)
