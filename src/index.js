@@ -17,6 +17,7 @@ import initializeApp from '~/actions/initializeApp'
 import { importLang } from '~/langs'
 import App from '~/App'
 import RouteContext from '~/context/RouteContext'
+import NavigationProvider from '~/containers/NavigationProvider'
 
 import favicon from '~/assets/picture-frame-blue-128.png'
 
@@ -32,13 +33,16 @@ ReactDOM.render(
     <BrowserRouter>
       <Route>
         {route => (
-          <RouteContext.Provider value={route}>
-            <Route component={App} />
-          </RouteContext.Provider>
+          console.log(route),
+          <NavigationProvider store={store}>
+            <RouteContext.Provider value={route}>
+              <Route component={App} />
+            </RouteContext.Provider>
+          </NavigationProvider>
         )}
       </Route>
     </BrowserRouter>
-  </ReduxProvider>,
+  </ReduxProvider >,
   document.querySelector('#app')
 )
 

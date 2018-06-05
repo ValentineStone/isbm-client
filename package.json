@@ -32,6 +32,7 @@
     "es6-promise": "^4.2.4",
     "escape-string-regexp": "^1.0.5",
     "file-loader": "^1.1.11",
+    "lodash": "^4.17.10",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-form": "^3.5.5",

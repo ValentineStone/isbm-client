@@ -15,6 +15,7 @@ import escapeStringRegexp from 'escape-string-regexp'
 import Translated from '~/containers/Translated'
 import RecordList from '~/components/InfiniteRecordList'
 import ClientEditor from '~/components/editors/ClientEditor'
+import withPersistentNavigation from '~/containers/withPersistentNavigation'
 
 const list = [{
   id: '384902mfck2ojwdefgdec',
@@ -55,96 +56,96 @@ let ClientsView = class ClientsView extends React.Component {
     this.state = {}
   }
   render() {
+    //console.log(this.props.navigation.params)
+    const selectedId = this.props.navigation.params.selected
+    const selectedItem = list.find(v => v.id === selectedId)
+    const listVisible = this.props.width !== 'xs' || !selectedId
+    const editorVisible = this.props.width !== 'xs' || selectedId
+    const listHeaderVisible = this.props.width !== 'xs' && listVisible
+    const EditorBase = this.props.width === 'xs' ? 'div' : Paper
+    const regExp = new RegExp(escapeStringRegexp(this.state.search), 'i')
     return (
-      <Route path="/clients/:id">
-        {({ match, history }) => {
-          const selectedId = match ? match.params.id : undefined
-          const selectedItem = list.find(v => v.id === selectedId)
-          const listVisible = this.props.width !== 'xs' || !selectedId
-          const editorVisible = this.props.width !== 'xs' || selectedId
-          const listHeaderVisible = this.props.width !== 'xs' && listVisible
-          const EditorBase = this.props.width === 'xs' ? 'div' : Paper
-          const regExp = new RegExp(escapeStringRegexp(this.state.search), 'i')
-          return (
-            <div className={this.props.classes.root}>
-              {listHeaderVisible &&
-                <Paper
-                  position="static"
-                  color="default"
-                  elevation={0}
-                  className={this.props.classes.listHeader}
-                >
-                  <Typography variant="subheading" color="secondary">
-                    <Translated>app.name</Translated>
-                  </Typography>
-                </Paper>
-              }
-              {listVisible &&
-                <div className={this.props.classes.listColumn}>
-                  <div>
-                    <Paper style={{ padding: 16, position: 'relative', zIndex: 1 }} square>
-                      <TextField
-                        placeholder="Search"
-                        fullWidth
-                        value={this.state.search}
-                        onInput={(e) => {
-                          this.props.navigate('.', { search: e.target.value || undefined })
-                        }}
-                      />
-                    </Paper>
-                  </div>
-                  <RecordList
-                    ListProps={{ disablePadding: true }}
-                    className={this.props.classes.listColumnFlexItem}
-                    primaryKey="fullname"
-                    secondaryKey="latestOrder"
-                    records={
-                      this.state.search && regExp
-                        ? list.filter(v =>
-                          v.fullname.match(regExp)
-                          || v.latestOrder.match(regExp)
-                        )
-                        : list
-                    }
-                    active={match && match.params.id}
-                    onRecordClick={({ id }) => {
-                      if (id === selectedId)
-                        history.push(`/clients`)
-                      else
-                        history.push(`/clients/${id}`)
-                    }}
-                  />
-                </div>
-              }
-              {editorVisible &&
-                <div className={this.props.classes.editorColumn}>
-                  <EditorBase className={this.props.classes.editorPaper}>
-                    {!listVisible &&
-                      <Button to="/clients" component={Link}>
-                        Back to list
-                      </Button>
-                    }
-                    {selectedItem
-                      ? (
-                        <ClientEditor value={selectedItem} />
-                      )
-                      : selectedId
-                        ? (
-                          <Redirect to="/clients" />
-                        )
-                        : (
-                          <Typography variant="display1">
-                            Select an item
-                          </Typography>
-                        )
-                    }
-                  </EditorBase>
-                </div>
-              }
+      <div className={this.props.classes.root}>
+        {listHeaderVisible &&
+          <Paper
+            position="static"
+            color="default"
+            elevation={0}
+            className={this.props.classes.listHeader}
+          >
+            <Typography variant="subheading" color="secondary">
+              <Translated>app.name</Translated>
+            </Typography>
+          </Paper>
+        }
+        {listVisible &&
+          <div className={this.props.classes.listColumn}>
+            <div>
+              <Paper style={{ padding: 16, position: 'relative', zIndex: 1 }} square>
+                <TextField
+                  placeholder="Search"
+                  fullWidth
+                  value={this.state.search}
+                  onInput={
+                    e => this.props.navigate('.', {
+                      search: e.target.value || undefined
+                    }, { replace: true, mergeParams: true })
+                  }
+                />
+              </Paper>
             </div>
-          )
-        }}
-      </Route>
+            <RecordList
+              ListProps={{ disablePadding: true }}
+              className={this.props.classes.listColumnFlexItem}
+              primaryKey="fullname"
+              secondaryKey="latestOrder"
+              records={
+                this.state.search && regExp
+                  ? list.filter(v =>
+                    v.fullname.match(regExp)
+                    || v.latestOrder.match(regExp)
+                  )
+                  : list
+              }
+              active={selectedId}
+              onRecordClick={({ id }) => {
+                if (id === selectedId)
+                  this.props.navigate('/clients', {
+                    selected: undefined
+                  }, { mergeParams: true })
+                else this.props.navigate('/clients', {
+                  selected: id
+                }, { mergeParams: true })
+              }}
+            />
+          </div>
+        }
+        {editorVisible &&
+          <div className={this.props.classes.editorColumn}>
+            <EditorBase className={this.props.classes.editorPaper}>
+              {!listVisible &&
+                <Button to="/clients" component={Link}>
+                  Back to list
+                      </Button>
+              }
+              {selectedItem
+                ? (
+                  <ClientEditor value={selectedItem} />
+                )
+                : selectedId
+                  ? (
+                    <Redirect to="/clients" />
+                  )
+                  : (
+                    <Typography variant="display1">
+                      Select an item
+                          </Typography>
+                  )
+              }
+            </EditorBase>
+          </div>
+        }
+      </div>
     )
   }
 }
@@ -216,23 +217,4 @@ ClientsView = withStyles(styles)(
   )
 )
 
-
-import { connect } from 'react-redux'
-import navigate from '~/actions/navigate'
-
-function mapStateToProps(state) {
-  return {
-    navigation: state.navigation
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    navigate: (...args) => dispatch(navigate(...args))
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ClientsView)
+export default withPersistentNavigation()(ClientsView)

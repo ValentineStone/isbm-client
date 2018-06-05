@@ -15,10 +15,6 @@ import cx from '~/utils/cx'
 
 
 class InfiniteRecordListItem extends React.Component {
-  constructor(props) {
-    super(props)
-    console.log('constructor(InfiniteRecordListItem)')
-  }
   render() {
     const {
       primary,
@@ -64,8 +60,6 @@ class InfiniteRecordList extends React.PureComponent {
       this.renderRecord(index)
     this.IndexedRecord.displayName = 'IndexedRecord'
   }
-
-  listRef = node => console.log(node)
 
   handleRecordClick = (record, index, array) => (...args) => {
     if (this.props.ListItemProps && this.props.ListItemProps.onClick)
@@ -126,7 +120,6 @@ class InfiniteRecordList extends React.PureComponent {
           this.props.classes.root,
           this.props.ListProps && this.props.ListProps.className
         )}
-        ref={this.listRef}
       >
         <AutoSizer>
           {({ width, height }) =>
