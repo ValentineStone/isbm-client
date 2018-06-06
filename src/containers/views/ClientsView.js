@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Link, Route, Redirect, withRouter } from 'react-router-dom'
+import Link from '~/containers/NavLink'
 
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -62,7 +62,7 @@ let ClientsView = class ClientsView extends React.Component {
     const listVisible = this.props.width !== 'xs' || !selectedId
     const editorVisible = this.props.width !== 'xs' || selectedId
     const listHeaderVisible = this.props.width !== 'xs' && listVisible
-    const EditorBase = this.props.width === 'xs' ? 'div' : Paper
+    //const EditorBase = this.props.width === 'xs' ? 'div' : Paper
     const regExp = new RegExp(escapeStringRegexp(this.state.search), 'i')
     return (
       <div className={this.props.classes.root}>
@@ -122,11 +122,11 @@ let ClientsView = class ClientsView extends React.Component {
         }
         {editorVisible &&
           <div className={this.props.classes.editorColumn}>
-            <EditorBase className={this.props.classes.editorPaper}>
+            <Paper className={this.props.classes.editorPaper}>
               {!listVisible &&
                 <Button to="/clients" component={Link}>
                   Back to list
-                      </Button>
+                </Button>
               }
               {selectedItem
                 ? (
@@ -134,15 +134,17 @@ let ClientsView = class ClientsView extends React.Component {
                 )
                 : selectedId
                   ? (
-                    <Redirect to="/clients" />
+                    <Typography>
+                      No item with id {selectedId}
+                    </Typography>
                   )
                   : (
                     <Typography variant="display1">
                       Select an item
-                          </Typography>
+                    </Typography>
                   )
               }
-            </EditorBase>
+            </Paper>
           </div>
         }
       </div>

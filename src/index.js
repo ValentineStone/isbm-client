@@ -6,7 +6,6 @@ import 'whatwg-fetch'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { BrowserRouter, Route } from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider as ReduxProvider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
@@ -30,18 +29,7 @@ const store = createStore(
 
 ReactDOM.render(
   <ReduxProvider store={store}>
-    <BrowserRouter>
-      <Route>
-        {route => (
-          console.log(route),
-          <NavigationProvider store={store}>
-            <RouteContext.Provider value={route}>
-              <Route component={App} />
-            </RouteContext.Provider>
-          </NavigationProvider>
-        )}
-      </Route>
-    </BrowserRouter>
+    <App />
   </ReduxProvider >,
   document.querySelector('#app')
 )

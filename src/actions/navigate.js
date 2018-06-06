@@ -1,7 +1,7 @@
 import action from './action'
 import translate from './translate'
 import { NAVIGATE } from './types'
-import assignDeep from 'assign-deep'
+import merge from 'lodash/merge'
 import qs from 'qs'
 
 const ignoreQueryPrefix = { ignoreQueryPrefix: true }
@@ -23,7 +23,7 @@ export const updateNavigation = () => dispatch => dispatch(
 
 const navigate = (url, params = {}, options = {}) => {
   if (options.mergeParams) {
-    params = assignDeep(
+    params = merge(
       {},
       qs.parse(location.search, ignoreQueryPrefix),
       params || {}
