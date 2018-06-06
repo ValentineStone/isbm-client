@@ -111,7 +111,7 @@ let ClientsView = class ClientsView extends React.Component {
               onRecordClick={({ id }) => {
                 if (id === selectedId)
                   this.props.navigate('/clients', {
-                    selected: undefined
+                    selected: null
                   }, { mergeParams: true })
                 else this.props.navigate('/clients', {
                   selected: id

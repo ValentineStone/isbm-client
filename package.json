@@ -20,14 +20,13 @@
     "babel-loader": "^8.0.0-beta.3",
     "html-webpack-plugin": "^3.2.0",
     "ini-loader": "^1.0.1",
-    "webpack": "^4.10.2",
+    "webpack": "^4.11.0",
     "webpack-cli": "^2.1.5",
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
-    "assign-deep": "^0.4.7",
     "babel-polyfill": "^6.26.0",
     "es6-promise": "^4.2.4",
     "escape-string-regexp": "^1.0.5",
@@ -46,13 +45,8 @@
     "reduce-reducers": "^0.3.0",
     "redux": "^4.0.0",
     "redux-actions": "^2.4.0",
-    "redux-logger": "^3.0.6",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.3.0",
-    "shallow-equal": "^1.0.0",
     "whatwg-fetch": "^2.0.4"
-  },
-  "bannedDependencies": {
-    "fsevents": "No-use, 84 packages every time :\\"
   }
 }
