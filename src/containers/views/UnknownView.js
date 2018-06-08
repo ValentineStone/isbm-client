@@ -2,12 +2,10 @@ import React from 'react'
 
 import Typography from '@material-ui/core/Typography'
 import withWidth from '@material-ui/core/withWidth'
-import Grid from '@material-ui/core/Grid'
-import manRunGif from '~/assets/manrun.gif'
 
 import Translated from '~/containers/Translated'
 
-function Unknown(props) {
+function UnknownView(props) {
   const pathname = props.location.pathname.slice(1) || 'Main'
   const slashIndex = pathname.indexOf('/')
   const pageName = pathname[0].toUpperCase() + pathname.slice(1, slashIndex > 0 ? slashIndex : undefined)
@@ -44,4 +42,4 @@ function Unknown(props) {
   )
 }
 
-export default withWidth()(Unknown)
+export default withWidth()(UnknownView)

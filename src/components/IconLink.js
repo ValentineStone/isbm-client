@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, Route } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 
-import RouteContext from '~/context/RouteContext'
+import RouteContext from '~/context/router'
 import pure from '~/utils/pure'
 
 function IconLink({

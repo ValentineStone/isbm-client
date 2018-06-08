@@ -11,10 +11,7 @@ import {
   AUTHENTICATE_USER,
   LOG_OUT_USER,
   INITIALIZE_APP,
-  NAVIGATE,
 } from '~/actions/types'
-
-import { getNavigation } from '~/actions/navigate'
 
 export const stateWithInitialStatus = (...keys) => {
   return keys.reduce((state, key) => (state[key] = STATUS_INITIAL, state), {})
@@ -82,12 +79,6 @@ const rootReducer = combineReducers({
   initialized(state = false, action) {
     if (action.type === INITIALIZE_APP.SUCCESS)
       return true
-    else
-      return state
-  },
-  navigation(state = getNavigation(), action) {
-    if (action.type === NAVIGATE)
-      return action.payload
     else
       return state
   }

@@ -21,4 +21,3 @@ export const SET_THEME = 'SET_THEME'
 export const JSONRPC = createRSFType('JSONRPC')
 export const AUTHENTICATE_USER = createRSFType('AUTHENTICATE_USER')
 export const LOG_OUT_USER = createRSFType('LOG_OUT_USER')
-export const NAVIGATE = 'NAVIGATE'

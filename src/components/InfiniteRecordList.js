@@ -8,10 +8,16 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
-import { AutoSizer } from 'react-virtualized'
+import ContainerDimensions from 'react-container-dimensions'
 import Infinite from 'react-infinite'
 
 import cx from '~/utils/cx'
+
+
+import CircularProgress from '@material-ui/core/CircularProgress'
+
+const RECORD_HEIGHT = 68
+const HIDDEN_RECORDS_MESSAGE_HEIGHT = 40
 
 
 class InfiniteRecordListItem extends React.Component {
@@ -19,15 +25,13 @@ class InfiniteRecordListItem extends React.Component {
     const {
       primary,
       secondary,
-      classes,
-      noTextTransformClassName,
+      className,
       ...props
     } = this.props
     return (
-      <ListItem component={Button} {...props}>
+      <ListItem component={Button} {...props} className={className}>
         <ListItemText
           disableTypography
-          className={noTextTransformClassName}
           primary={
             <Typography
               noWrap
@@ -50,15 +54,73 @@ class InfiniteRecordListItem extends React.Component {
   }
 }
 
-
 class InfiniteRecordList extends React.PureComponent {
+  static defaultProps = {
+    initialRecords: [],
+    loadAdditionalRecords: () => null,
+    idKey: 'id',
+    hiddenRecordsMessage: count => count + ' items hidden'
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.filter !== state.lastFilter) {
+      return {
+        lastFilter: props.filter,
+        visibleRecords: props.filter
+          ? props.filter(state.records)
+          : state.records
+      }
+    }
+    return null
+  }
+
+  componentDidMount() {
+    this.mounted = true
+  }
+  componentWillUnmount() {
+    this.mounted = false
+  }
+
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      records: props.initialRecords,
+      visibleRecords: props.initialRecords,
+      isLoading: false,
+      canLoadMore: true
+    }
 
     this.IndexedRecord = ({ index }) =>
       this.renderRecord(index)
     this.IndexedRecord.displayName = 'IndexedRecord'
+  }
+
+  handleInfiniteLoad = async () => {
+    this.setState({ isLoading: true })
+    let records = this.state.records
+    let loadMore = true
+    let visibleRecords
+    let additionalRecords
+
+    do {
+      additionalRecords =
+        await this.props.loadAdditionalRecords(records)
+      if (!this.mounted) return
+      if (!additionalRecords) break
+      records = records.concat(additionalRecords)
+      visibleRecords = this.props.filter
+        ? this.props.filter(records)
+        : records
+      this.setState({ records })
+    } while (visibleRecords.length <= this.state.visibleRecords.length)
+
+    this.setState((state, props) => ({
+      canLoadMore: Boolean(additionalRecords),
+      isLoading: false,
+      visibleRecords: props.filter
+        ? props.filter(records)
+        : records
+    }))
   }
 
   handleRecordClick = (record, index, array) => (...args) => {
@@ -69,9 +131,9 @@ class InfiniteRecordList extends React.PureComponent {
   }
 
   renderRecord = index => {
-    const records = this.props.records
+    const records = this.state.visibleRecords
     const record = records[index]
-    const id = record[this.props.idKey] || record.id
+    const id = record[this.props.idKey]
     const isActive = Array.isArray(this.props.active)
       ? this.props.active.includes(id)
       : this.props.active === id
@@ -83,36 +145,47 @@ class InfiniteRecordList extends React.PureComponent {
         ...this.props.ActiveListItemProps
       }
     }
-
-    let listItemStyle
-    if (isActive) {
-      listItemStyle = activeProps.style
-    }
-    if (this.props.ListItemProps && this.props.ListItemProps.style) {
-      listItemStyle = {
-        ...this.props.ListItemProps.style,
-        ...listItemStyle
-      }
-    }
     return (
       <InfiniteRecordListItem
         {...this.props.ListItemProps}
         {...activeProps}
-        style={listItemStyle}
         onClick={this.handleRecordClick(record, index, records)}
         primary={record[this.props.primaryKey]}
         secondary={record[this.props.secondaryKey]}
-        noTextTransformClassName={this.props.classes.noTextTransform}
+        className={this.props.classes.item}
       />
     )
   }
 
-  renderPreRenderedRecord = (record, index) => React.createElement(
-    this.IndexedRecord,
-    { index, key: index }
+  renderIndexedRecord = (record, index) => (
+    React.createElement(
+      this.IndexedRecord,
+      { index, key: index }
+    )
   )
 
+  needsIndexedRecordsRerender = () => {
+    const needsThat =
+      this.lastRecordsRendered !== this.state.visibleRecords
+      || !this.renderedIndexRecords
+    this.lastRecordsRendered = this.state.visibleRecords
+    return needsThat
+  }
+
+  renderIndexedRecords = () => {
+    const shouldReRender = this.needsIndexedRecordsRerender()
+    if (shouldReRender)
+      this.renderedIndexRecords =
+        this.state.visibleRecords.map(this.renderIndexedRecord)
+    return this.renderedIndexRecords
+  }
+
   render() {
+    let infiniteItems = this.renderIndexedRecords()
+    const hiddenRecordsCount =
+      this.state.records.length
+      - this.state.visibleRecords.length
+    const hasHidenRecords = Boolean(hiddenRecordsCount)
     return (
       <List
         {...this.props.ListProps}
@@ -121,27 +194,59 @@ class InfiniteRecordList extends React.PureComponent {
           this.props.ListProps && this.props.ListProps.className
         )}
       >
-        <AutoSizer>
-          {({ width, height }) =>
-            <div style={{ width }}>
-              <Infinite
-                containerHeight={height || 141}
-                elementHeight={70}
-              >
-                {this.props.records.map(this.renderPreRenderedRecord)}
-              </Infinite>
-            </div>
+        <ContainerDimensions>
+          {({ height }) =>
+            <Infinite
+              containerHeight={height - (hasHidenRecords ? HIDDEN_RECORDS_MESSAGE_HEIGHT : 0)}
+              elementHeight={RECORD_HEIGHT}
+              infiniteLoadBeginEdgeOffset={
+                this.state.canLoadMore
+                  ? RECORD_HEIGHT
+                  : undefined
+              }
+              onInfiniteLoad={
+                this.state.canLoadMore
+                  ? this.handleInfiniteLoad
+                  : undefined
+              }
+              isInfiniteLoading={
+                this.state.canLoadMore
+                && this.state.isLoading
+              }
+              loadingSpinnerDelegate={
+                <div className={this.props.classes.loadingSpinner}>
+                  <CircularProgress />
+                </div>
+              }
+            >
+              {infiniteItems}
+            </Infinite>
           }
-        </AutoSizer>
-      </ List>
+        </ContainerDimensions>
+        {hasHidenRecords &&
+          <Paper className={this.props.classes.hiddenCounter}>
+            <Typography noWrap>
+              {this.props.hiddenRecordsMessage(hiddenRecordsCount)}
+            </Typography>
+          </Paper>
+        }
+      </ List >
     )
   }
 }
 
 
 const styles = {
-  noTextTransform: {
-    textTransform: 'none'
+  item: {
+    textTransform: 'none',
+    height: RECORD_HEIGHT
+  },
+  hiddenCounter: {
+    height: HIDDEN_RECORDS_MESSAGE_HEIGHT,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8
   },
   noFocusOutline: {
     '&:focus': {
@@ -151,6 +256,10 @@ const styles = {
   root: {
     flex: 1,
     overflow: 'hidden'
+  },
+  loadingSpinner: {
+    margin: '0 auto',
+    width: 'min-content'
   }
 }
 

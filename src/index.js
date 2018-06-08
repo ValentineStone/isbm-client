@@ -6,7 +6,9 @@ import 'whatwg-fetch'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { Provider as RouteProvider } from '~/context/router'
+
 import { createStore, applyMiddleware } from 'redux'
 import { Provider as ReduxProvider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
@@ -16,12 +18,6 @@ import rootReducer from '~/reducers'
 import initializeApp from '~/actions/initializeApp'
 import { importLang } from '~/langs'
 import App from '~/App'
-import RouteContext from '~/context/RouteContext'
-import NavigationProvider from '~/containers/NavigationProvider'
-
-import favicon from '~/assets/picture-frame-blue-128.png'
-
-document.head.innerHTML += `<link rel="shortcut icon" type="image/png" href="${favicon}"/>`
 
 const store = createStore(
   rootReducer,
@@ -31,18 +27,11 @@ const store = createStore(
 ReactDOM.render(
   <ReduxProvider store={store}>
     <BrowserRouter>
-      <Route>
-        {route => (
-          console.log(route),
-          <NavigationProvider store={store}>
-            <RouteContext.Provider value={route}>
-              <Route component={App} />
-            </RouteContext.Provider>
-          </NavigationProvider>
-        )}
-      </Route>
+      <RouteProvider>
+        <App />
+      </RouteProvider>
     </BrowserRouter>
-  </ReduxProvider >,
+  </ReduxProvider>,
   document.querySelector('#app')
 )
 

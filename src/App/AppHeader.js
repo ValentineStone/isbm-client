@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -19,24 +18,6 @@ import Translated from '~/containers/Translated'
 
 import cx from '~/utils/cx'
 
-const titleElement = document.querySelector('title')
-
-/*
-const debugStylesheet = document.head.querySelector('#debug-stylesheet')
-const debugHitboxToggle = () => {
-  if (localStorage.getItem('debuggingHitboxes') === 'true') {
-    debugStylesheet.innerHTML = ''
-    localStorage.setItem('debuggingHitboxes', 'false')
-  }
-  else {
-    debugStylesheet.innerHTML = '* {outline: 1px solid rgba(127,127,127,.5);}'
-    localStorage.setItem('debuggingHitboxes', 'true')
-  }
-}
-if (localStorage.getItem('debuggingHitboxes') === 'true')
-  debugStylesheet.innerHTML = '* {outline: 1px solid rgba(127,127,127,.5);}'
-*/
-
 let AppHeader
 AppHeader = function AppHeader(props) {
   return (
@@ -44,7 +25,7 @@ AppHeader = function AppHeader(props) {
       position="static"
       color="default"
       className={cx(props.classes.appBar, props.className)}
-      elevation={props.navigationVisible ? 0 : undefined}
+      elevation={props.AppNavigationVisible ? 0 : undefined}
     >
       <Grid
         container
@@ -57,19 +38,14 @@ AppHeader = function AppHeader(props) {
           variant="headline"
         >
           <Translated>
-            {t => {
-              const appName = t`app.name`
-              return <>
-                {ReactDOM.createPortal(appName, titleElement)}
-                {props.width === 'xs' ? t`app.shortname` : appName}
-              </>
-            }}
+            {t => document.title = props.width === 'xs' ? t`app.shortname` : t`app.name`}
           </Translated>
         </Typography>
         {props.showDev && <IconLink Icon={CodeIcon} to="/development" />}
         <IconLink Icon={TranslateIcon} onClick={props.onToggleLang} />
         <IconLink Icon={InvertColorsIcon} onClick={props.onToggleTheme} />
         {/*<IconLink Icon={DebugIcon} onClick={debugHitboxToggle} />*/}
+
       </Grid>
     </AppBar>
   )
@@ -108,5 +84,8 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  {
+    onToggleLang: () => toggleLang('en', 'ru'),
+    onToggleTheme: toggleTheme
+  }
 )(AppHeader)

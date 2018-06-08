@@ -27,4 +27,5 @@ const withPropsBasedKey = ({ needsNewKey: falsy }) => Component => {
     return <Component {...props} key={uniqueKey} />
   }
   HOC.displayName = `withPropsBasedKey(${displayNameOf(Component)})`
+  return HOC
 }

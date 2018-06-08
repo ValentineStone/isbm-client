@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-import RouteContext from '~/context/RouteContext'
+import RouteContext from '~/context/router'
 
 function TextLink({
   classes,
