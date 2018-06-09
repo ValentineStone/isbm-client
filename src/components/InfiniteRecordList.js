@@ -136,9 +136,11 @@ class InfiniteRecordList extends React.PureComponent {
     const records = this.state.visibleRecords
     const record = records[index]
     const id = record[this.props.idKey]
-    const isActive = Array.isArray(this.props.active)
-      ? this.props.active.includes(id)
-      : this.props.active === id
+    const isActive = id && (
+      Array.isArray(this.props.active)
+        ? this.props.active.includes(id)
+        : this.props.active === id
+    )
 
     let activeProps = undefined
     if (isActive) {

@@ -12,7 +12,7 @@ function ProfileView(props) {
   return (
     <div style={{ padding: 16 }}>
       <Typography
-        variant="display1"
+        variant="title"
         color="secondary"
         align="center"
         gutterBottom
@@ -21,8 +21,6 @@ function ProfileView(props) {
       </Typography>
       <Button
         style={{ margin: 'auto', display: 'block' }}
-        variant="raised"
-        color="secondary"
         onClick={props.logOutUser}
       >
         <Translated>Log out</Translated>

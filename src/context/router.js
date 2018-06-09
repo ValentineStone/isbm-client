@@ -41,15 +41,20 @@ export const withRouteContext = () => Component => {
 export const Route = withRouteContext()(ReactRouterRoute)
 export const Switch = withRouteContext()(ReactRouterSwitch)
 
+
+const persistentLocationsJson = localStorage.getItem('persistentLocations')
+const persistentLocations = persistentLocationsJson
+  ? JSON.parse(persistentLocationsJson)
+  : {}
+
 export const withPersistentRoute = ({
   redirectProps,
   withRouteProps = false
 }) => Component => {
-  let lastLocation = undefined
-  class WithPersistentRoute extends React.Component {
+  class withPersistentRoute extends React.Component {
     constructor(props) {
       super(props)
-      this.initialRedirect = lastLocation
+      this.initialRedirect = persistentLocations[this.props.location.pathname]
     }
     render() {
       const initialRedirect = this.initialRedirect
@@ -62,10 +67,14 @@ export const withPersistentRoute = ({
         return <Component {...this.props} {...(withRouteProps && routeProps)} />
     }
     componentDidUpdate() {
-      lastLocation = this.props.location
+      persistentLocations[this.props.location.pathname] = this.props.location
+      localStorage.setItem(
+        'persistentLocations',
+        JSON.stringify(persistentLocations)
+      )
     }
   }
-  WithPersistentRoute.displayName =
+  withPersistentRoute.displayName =
     `withPersistentRoute(${displayNameOf(Component)})`
-  return withRouteContext()(WithPersistentRoute)
+  return withRouteContext()(withPersistentRoute)
 }

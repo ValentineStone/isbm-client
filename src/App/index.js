@@ -14,8 +14,9 @@ import LoginForm from '~/containers/LoginForm'
 
 import UnknownView from '~/containers/views/UnknownView'
 import DevelopmentView from '~/containers/views/DevelopmentView'
-import ClientsView from '~/containers/views/ClientsView'
 import ProfileView from '~/containers/views/ProfileView'
+
+import RecordEditorWithListView from '~/containers/views/RecordEditorWithListView'
 
 import Translated from '~/containers/Translated'
 
@@ -52,8 +53,35 @@ let App = class App extends React.PureComponent {
           : (
             <Switch>
               <Route path="/development" component={DevelopmentView} />
-              <Route path="/clients" component={ClientsView} />
               <Route path="/profile" component={ProfileView} />
+              <Route path="/clients">
+                <RecordEditorWithListView
+                  recordType="Client"
+                  primaryRecordProp="fullname"
+                  secondaryRecordProp="note"
+                />
+              </Route>
+              <Route path="/warehouse">
+                <RecordEditorWithListView
+                  recordType="Material"
+                  primaryRecordProp="name"
+                  secondaryRecordProp="art"
+                />
+              </Route>
+              <Route path="/orders">
+                <RecordEditorWithListView
+                  recordType="Order"
+                  primaryRecordProp="summary"
+                  secondaryRecordProp="note"
+                />
+              </Route>
+              <Route path="/tasks">
+                <RecordEditorWithListView
+                  recordType="Task"
+                  primaryRecordProp="summary"
+                  secondaryRecordProp="date"
+                />
+              </Route>
               <Route component={UnknownView} />
             </Switch>
           )

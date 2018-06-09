@@ -91,12 +91,16 @@ let RecordListView = class RecordListView extends React.PureComponent {
         {listVisible &&
           <section className={classes.listSection}>
             <Paper className={classes.searchBar} square>
-              <TextField
-                placeholder="Search"
-                fullWidth
-                value={search}
-                onInput={this.handleSearchInput}
-              />
+              <Translated>
+                {t =>
+                  <TextField
+                    placeholder={t`Search`}
+                    fullWidth
+                    value={search}
+                    onInput={this.handleSearchInput}
+                  />
+                }
+              </Translated>
             </Paper>
             <RecordList
               ListProps={{ disablePadding: true }}
