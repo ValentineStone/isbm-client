@@ -53,6 +53,10 @@ let RecordListView = class RecordListView extends React.PureComponent {
     search: e.target.value || undefined
   })
 
+  handleBackToListClick = () => this.props.setParams({
+    id: undefined
+  })
+
 
 
   hiddenRecordsMessage = count => (
@@ -119,7 +123,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
             component="section"
           >
             {!listVisible &&
-              <Button to="?" fullWidth component={Link}>
+              <Button fullWidth onClick={this.handleBackToListClick}>
                 <Translated>Back to list</Translated>
               </Button>
             }
