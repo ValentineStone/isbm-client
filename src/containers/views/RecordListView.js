@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Link, Route, Redirect, withRouter } from 'react-router-dom'
-import { withPersistentRoute } from '~/context/router'
+import { Link } from 'react-router-dom'
 
 import connectRoute from '~/components/connectRoute'
 
@@ -16,7 +15,6 @@ import escapeRegExp from 'lodash/escapeRegExp'
 
 import Translated from '~/containers/Translated'
 import RecordList from '~/components/InfiniteRecordList'
-import ClientEditor from '~/components/editors/ClientEditor'
 
 let RecordListView = class RecordListView extends React.PureComponent {
   static getDerivedStateFromProps(props, state) {
@@ -30,8 +28,8 @@ let RecordListView = class RecordListView extends React.PureComponent {
         )
         const filter = records => records.filter(
           record => (
-            record[props.primaryKey].match(regExp)
-            || record[props.secondaryKey].match(regExp)
+            (record[props.primaryKey] || '').match(regExp)
+            || (record[props.secondaryKey] || '').match(regExp)
           )
         )
         return { search, filter }
@@ -83,14 +81,13 @@ let RecordListView = class RecordListView extends React.PureComponent {
     const listHeaderVisible = width !== 'xs' && listVisible
     return (
       <>
-        <Paper
-          className={classes.listHeader}
-          elevation={0}
-        >
-          <Typography variant="subheading" color="secondary">
-            <Translated>app.name</Translated>
-          </Typography>
-        </Paper>
+        {listVisible &&
+          <Paper className={classes.listHeader} elevation={0}>
+            <Typography variant="subheading" color="secondary">
+              <Translated>app.name</Translated>
+            </Typography>
+          </Paper>
+        }
         {listVisible &&
           <section className={classes.listSection}>
             <Paper className={classes.searchBar} square>
@@ -113,40 +110,43 @@ let RecordListView = class RecordListView extends React.PureComponent {
           </section>
         }
         {editorVisible &&
-          <section className={classes.editorSection}>
+          <Paper
+            className={classes.editorSection}
+            component="section"
+          >
             {!listVisible &&
               <Button to="?" fullWidth component={Link}>
-                Back to list
+                <Translated>Back to list</Translated>
               </Button>
             }
             {id
               ? children(id)
               : (
-                <Typography variant="display1">
-                  Select an item
+                <Typography variant="subheading">
+                  <Translated>Select an item to edit</Translated>
                 </Typography>
               )
             }
-          </section>
+          </Paper>
         }
       </>
     )
   }
 }
 
-const styles = theme => ({
+const styles = {
   listSection: {
     width: '100%',
     maxWidth: 300,
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    [theme.breakpoints.down('xs')]: {
-      maxWidth: 'unset'
-    },
     position: 'fixed',
     bottom: 0,
     top: 96,
+    '@media (max-width:599.95px)': {
+      maxWidth: 'unset'
+    },
   },
   listHeader: {
     position: 'fixed',
@@ -159,9 +159,10 @@ const styles = theme => ({
   },
   editorSection: {
     marginLeft: 300,
-    [theme.breakpoints.down('xs')]: {
+    padding: 16,
+    '@media (max-width:599.95px)': {
       marginLeft: 'unset',
-    }
+    },
   },
   list: {
     flex: 1,
@@ -170,7 +171,7 @@ const styles = theme => ({
   searchBar: {
     padding: 16
   }
-})
+}
 
 RecordListView = withStyles(styles)(
   withWidth()(

@@ -101,12 +101,14 @@ class InfiniteRecordList extends React.PureComponent {
     let loadMore = true
     let visibleRecords
     let additionalRecords
+    let canLoadMore = true
 
     do {
       additionalRecords =
         await this.props.loadAdditionalRecords(records)
+      canLoadMore = Boolean(additionalRecords && additionalRecords.length)
       if (!this.mounted) return
-      if (!additionalRecords) break
+      if (!canLoadMore) break
       records = records.concat(additionalRecords)
       visibleRecords = this.props.filter
         ? this.props.filter(records)
@@ -115,7 +117,7 @@ class InfiniteRecordList extends React.PureComponent {
     } while (visibleRecords.length <= this.state.visibleRecords.length)
 
     this.setState((state, props) => ({
-      canLoadMore: Boolean(additionalRecords),
+      canLoadMore,
       isLoading: false,
       visibleRecords: props.filter
         ? props.filter(records)

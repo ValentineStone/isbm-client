@@ -1,33 +1,30 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
 
 import Translated from '~/containers/Translated'
 import RecordListView from '~/containers/views/RecordListView'
 import Inspector from '~/components/Inspector'
+import RecordEditor from '~/containers/RecordEditor'
 
 let ClientsView = class ClientsView extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  getMoreItems = async items => {
-    const more = await this.props.jsonrpc('getClients', {
-      limit: items.length < 16 ? 16 : items.length,
-      skip: items.length
-    })
-    return more.length ? more : null
-  }
+  loadAdditionalRecords = items => this.props.jsonrpc('getRecords', {
+    limit: items.length < 16 ? 16 : items.length,
+    skip: items.length,
+    type: 'Client',
+    props: ['fullname', 'note', 'id']
+  })
 
   render() {
     return (
       <RecordListView
-        loadAdditionalRecords={this.getMoreItems}
+        loadAdditionalRecords={this.loadAdditionalRecords}
         primaryKey="fullname"
-        secondaryKey="desc"
+        secondaryKey="note"
       >
-        {record => <Inspector data={record} />}
+        {recordId =>
+          <RecordEditor recordId={recordId} recordType="Client">
+            {formApi => <Inspector data={formApi.values} expandLevel={1} />}
+          </RecordEditor>
+        }
       </RecordListView>
     )
   }

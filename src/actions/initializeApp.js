@@ -31,7 +31,8 @@ const identifyUser = () => async dispatch => {
     const user = await dispatch(jsonrpc('authenticateUser', { jwt }))
       .catch(() => guestUser)
     if (user) {
-      localStorage.setItem('jwt', user.jwt)
+      if (user.jwt)
+        localStorage.setItem('jwt', user.jwt)
       return user
     }
     else
