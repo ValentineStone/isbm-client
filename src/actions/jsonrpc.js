@@ -42,7 +42,7 @@ const jsonrpc = (...args) => (dispatch, getState) => {
 const jsonrpcThunkAction = createThunkAction(
   JSONRPC, jsonrpc, {
     fromThunkAction: true,
-    requestPayloadCreator: (jsonrpc, jwt) => ({ jsonrpc, jwt }),
+    requestPayloadCreator: (...args) => toJsonrpc(...args),
     throws: failureAction => failureAction.payload
   })
 export default jsonrpcThunkAction

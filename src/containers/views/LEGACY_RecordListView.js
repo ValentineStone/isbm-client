@@ -10,7 +10,6 @@ import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 import withWidth from '@material-ui/core/withWidth'
 import { withStyles } from '@material-ui/core/styles'
-import Divider from '@material-ui/core/Divider'
 
 import escapeRegExp from 'lodash/escapeRegExp'
 
@@ -54,23 +53,11 @@ let RecordListView = class RecordListView extends React.PureComponent {
     search: e.target.value || undefined
   })
 
-  handleDeselect = reason => {
-    this.handleEditorChange(undefined)
-  }
+  handleBackToListClick = () => this.props.setParams({
+    id: undefined
+  })
 
-  handleEditorChange = record => {
-    if (record) {
-      this.recordList.setRecord(this.props.id, record)
-    }
-    else {
-      this.recordList.setRecord(this.props.id, undefined)
-      this.props.setParams({
-        id: undefined
-      })
-    }
-  }
 
-  setRecordListRef = recordList => this.recordList = recordList
 
   hiddenRecordsMessage = count => (
     <Translated>
@@ -80,6 +67,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
       }
     </Translated>
   )
+
 
   render() {
 
@@ -96,61 +84,60 @@ let RecordListView = class RecordListView extends React.PureComponent {
     const editorVisible = width !== 'xs' || id
     const listHeaderVisible = width !== 'xs' && listVisible
     return (
-      <Translated>
-        {t =>
-          <>
-            {listVisible &&
-              <Paper className={classes.listHeader} elevation={0}>
-                <Typography variant="subheading" color="secondary">
-                  {t`app.name`}
-                </Typography>
-              </Paper>
-            }
-            {listVisible &&
-              <section className={classes.listSection}>
-                <div className={classes.searchBar}>
+      <>
+        {listVisible &&
+          <Paper className={classes.listHeader} elevation={0}>
+            <Typography variant="subheading" color="secondary">
+              <Translated>app.name</Translated>
+            </Typography>
+          </Paper>
+        }
+        {listVisible &&
+          <section className={classes.listSection}>
+            <Paper className={classes.searchBar} square>
+              <Translated>
+                {t =>
                   <TextField
                     placeholder={t`Search`}
                     fullWidth
                     value={search}
                     onInput={this.handleSearchInput}
                   />
-                </div>
-                <RecordList
-                  listRef={this.setRecordListRef}
-                  className={classes.list}
-                  filter={this.state.filter}
-                  active={id}
-                  onRecordClick={this.handleRecordClick}
-                  hiddenRecordsMessage={this.hiddenRecordsMessage}
-                  {...RecordListprops}
-                />
-                <Divider />
-
-              </section>
-            }
-            {editorVisible &&
-              <section className={classes.editorSection}>
-                <Paper className={classes.editorPaper}>
-                  {!listVisible &&
-                    <Button fullWidth onClick={this.handleDeselect}>
-                      {t`Back to list`}
-                    </Button>
-                  }
-                  {id
-                    ? children(id, this.handleEditorChange)
-                    : (
-                      <Typography variant="subheading">
-                        {t`Select an item to edit`}
-                      </Typography>
-                    )
-                  }
-                </Paper>
-              </section>
-            }
-          </>
+                }
+              </Translated>
+            </Paper>
+            <RecordList
+              ListProps={{ disablePadding: true }}
+              className={classes.list}
+              filter={this.state.filter}
+              active={id}
+              onRecordClick={this.handleRecordClick}
+              hiddenRecordsMessage={this.hiddenRecordsMessage}
+              {...RecordListprops}
+            />
+          </section>
         }
-      </Translated>
+        {editorVisible &&
+          <Paper
+            className={classes.editorSection}
+            component="section"
+          >
+            {!listVisible &&
+              <Button fullWidth onClick={this.handleBackToListClick}>
+                <Translated>Back to list</Translated>
+              </Button>
+            }
+            {id
+              ? children(id)
+              : (
+                <Typography variant="subheading">
+                  <Translated>Select an item to edit</Translated>
+                </Typography>
+              )
+            }
+          </Paper>
+        }
+      </>
     )
   }
 }
@@ -160,15 +147,14 @@ const styles = {
     width: '100%',
     maxWidth: 300,
     overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
     position: 'fixed',
     bottom: 0,
     top: 96,
     '@media (max-width:599.95px)': {
       maxWidth: 'unset'
     },
-
-    display: 'flex',
-    flexDirection: 'column',
   },
   listHeader: {
     position: 'fixed',
@@ -181,24 +167,14 @@ const styles = {
   },
   editorSection: {
     marginLeft: 300,
-    marginRight: 300,
-    padding: 8,
+    padding: 16,
     '@media (max-width:599.95px)': {
       marginLeft: 'unset',
     },
-    '@media (max-width:1049.95px)': {
-      marginRight: 'unset',
-    },
-  },
-  editorPaper: {
-    margin: '0 auto',
-    padding: 16,
-    maxWidth: 450,
   },
   list: {
-    //height: 300,
-
     flex: 1,
+    display: 'flex'
   },
   searchBar: {
     padding: 16

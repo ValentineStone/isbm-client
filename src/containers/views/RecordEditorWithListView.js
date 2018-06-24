@@ -1,21 +1,22 @@
 import React from 'react'
 import RecordListView from '~/containers/views/RecordListView'
-import Inspector from '~/components/Inspector'
 import RecordEditor from '~/containers/RecordEditor'
+
+const identity = v => v
 
 let RecordEditorWithListView = class RecordEditorWithListView extends React.Component {
   loadAdditionalRecords = records => this.props.jsonrpc('getRecords', {
     limit: records.length < 16 ? 16 : records.length,
     skip: records.length,
-    type: this.props.recordType,
-    props: [
-      'id',
-      this.props.primaryRecordProp,
-      this.props.secondaryRecordProp
-    ]
-  })
+    type: this.props.recordType
+  }).then(records => records.map(this.props.recordTransform || identity))
+
+  handleChange = (record) => {
+    this.onChange(record && (this.props.recordTransform || identity)(record))
+  }
 
   render() {
+    const { Editor } = this.props
     return (
       <RecordListView
         key={this.props.recordType}
@@ -23,11 +24,25 @@ let RecordEditorWithListView = class RecordEditorWithListView extends React.Comp
         primaryKey={this.props.primaryRecordProp}
         secondaryKey={this.props.secondaryRecordProp}
       >
-        {recordId =>
-          <RecordEditor recordId={recordId} recordType={this.props.recordType}>
-            {formApi => <Inspector data={formApi.values} expandLevel={1} />}
-          </RecordEditor>
-        }
+        {(recordId, onChange) => {
+          this.onChange = onChange
+          return (
+            <RecordEditor
+              recordId={recordId}
+              recordType={this.props.recordType}
+              onChange={this.handleChange}
+            >
+              {formApi =>
+                <Editor
+                  formApi={formApi}
+                  jsonrpc={this.props.jsonrpc}
+                  onChange={this.handleChange}
+                />
+              }
+            </RecordEditor>
+
+          )
+        }}
       </RecordListView>
     )
   }

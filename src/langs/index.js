@@ -1,3 +1,6 @@
+import('./en.ini')
+import('./ru.ini')
+
 const langs = {
   en: () => import('./en.ini'),
   ru: () => import('./ru.ini'),

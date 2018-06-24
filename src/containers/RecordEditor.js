@@ -4,8 +4,9 @@ import { Form } from 'react-form'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { withStyles } from '@material-ui/core/styles'
-
 import Translated from '~/containers/Translated'
+
+import isEqual from 'lodash/isEqual'
 
 let RecordEditor = class RecordEditor extends React.PureComponent {
   static getDerivedStateFromProps(props, state) {
@@ -42,11 +43,21 @@ let RecordEditor = class RecordEditor extends React.PureComponent {
     }).then(recordData => {
       if (this.mounted) {
         this.setState(state => {
-          if (state.recordId === recordId)
+          if (state.recordId === recordId) {
+            this.lastChange = recordData
             return { recordData, loadState: 'success' }
+          }
         })
       }
     })
+  }
+
+  onFormChange = ({ values: record }) => {
+    if (!isEqual(this.lastChange, record)) {
+      this.lastChange = record
+      this.props.jsonrpc('setRecord', record)
+      this.props.onChange(record)
+    }
   }
 
   renderForm = formApi => (
@@ -64,10 +75,10 @@ let RecordEditor = class RecordEditor extends React.PureComponent {
       )
       case 'success': return (
         <Form
-          preventDefault
           defaultValues={this.state.recordData}
           key={this.props.recordId}
           render={this.renderForm}
+          onChange={this.onFormChange}
         />
       )
       case 'failure': return (

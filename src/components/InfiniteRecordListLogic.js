@@ -13,12 +13,10 @@ import Infinite from 'react-infinite'
 
 import cx from '~/utils/cx'
 
-
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const RECORD_HEIGHT = 68
 const HIDDEN_RECORDS_MESSAGE_HEIGHT = 40
-
 
 class InfiniteRecordListItem extends React.Component {
   render() {
@@ -76,13 +74,9 @@ class InfiniteRecordList extends React.PureComponent {
 
   componentDidMount() {
     this.mounted = true
-    if (this.props.listRef)
-      this.props.listRef(this)
   }
   componentWillUnmount() {
     this.mounted = false
-    if (this.props.listRef)
-      this.props.listRef(undefined)
   }
 
   constructor(props) {
@@ -97,54 +91,6 @@ class InfiniteRecordList extends React.PureComponent {
     this.IndexedRecord = ({ index }) =>
       this.renderRecord(index)
     this.IndexedRecord.displayName = 'IndexedRecord'
-  }
-
-  removeRecord = recordId => {
-    this.setState(state => {
-      const findRecord = record => record[this.props.idKey] === recordId
-
-      const newRecords = [...state.records]
-      const recordIndex = state.records.findIndex(findRecord)
-      if (recordIndex >= 0)
-        newRecords.splice(recordIndex, 1)
-
-      const newVisibleRecords = [...state.visibleRecords]
-      const visibleRecordIndex = state.visibleRecords.findIndex(findRecord)
-      if (visibleRecordIndex >= 0)
-        newVisibleRecords.splice(visibleRecordIndex, 1)
-
-      return {
-        records: newRecords,
-        visibleRecords: newVisibleRecords
-      }
-    })
-  }
-
-  setRecord = (recordId, newRecord) => {
-    this.setState(state => {
-      const findRecord = record => record[this.props.idKey] === recordId
-
-      const newRecords = [...state.records]
-      const recordIndex = state.records.findIndex(findRecord)
-      if (recordIndex >= 0)
-        if (newRecord)
-          newRecords.splice(recordIndex, 1, newRecord)
-        else
-          newRecords.splice(recordIndex, 1)
-
-      const newVisibleRecords = [...state.visibleRecords]
-      const visibleRecordIndex = state.visibleRecords.findIndex(findRecord)
-      if (visibleRecordIndex >= 0)
-        if (newRecord)
-          newVisibleRecords.splice(visibleRecordIndex, 1, newRecord)
-        else
-          newVisibleRecords.splice(visibleRecordIndex, 1)
-
-      return {
-        records: newRecords,
-        visibleRecords: newVisibleRecords
-      }
-    })
   }
 
   handleInfiniteLoad = async () => {
@@ -241,21 +187,19 @@ class InfiniteRecordList extends React.PureComponent {
     const hiddenRecordsCount =
       this.state.records.length
       - this.state.visibleRecords.length
-    const hasHidenRecords = hiddenRecordsCount > 0
+    const hasHidenRecords = Boolean(hiddenRecordsCount)
     return (
       <List
         {...this.props.ListProps}
-        disablePadding
         className={cx(
           this.props.classes.root,
-          this.props.className,
           this.props.ListProps && this.props.ListProps.className
         )}
       >
         <ContainerDimensions>
           {({ height }) =>
             <Infinite
-              containerHeight={(height - (hasHidenRecords ? HIDDEN_RECORDS_MESSAGE_HEIGHT : 0)) || 1}
+              containerHeight={height - (hasHidenRecords ? HIDDEN_RECORDS_MESSAGE_HEIGHT : 0)}
               elementHeight={RECORD_HEIGHT}
               infiniteLoadBeginEdgeOffset={
                 this.state.canLoadMore

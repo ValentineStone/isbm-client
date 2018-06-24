@@ -40,15 +40,12 @@ const chromeDark = {
 
 class MaterialUiInspector extends React.PureComponent {
   render() {
-    const { theme, classes, PaperProps, ...props } = this.props
+    const { theme, classes, PaperProps, noPaper, ...props } = this.props
     const chromeTheme = theme.palette.type === 'dark'
       ? chromeDark
       : chromeLight
-    return (
-      <Paper
-        {...PaperProps}
-        className={cx(classes.paper, PaperProps && PaperProps.className)}
-      >
+    if (noPaper) {
+      return (
         <ul className={classes.ul}>
           <Inspector
             {...props}
@@ -56,8 +53,24 @@ class MaterialUiInspector extends React.PureComponent {
             theme={chromeTheme}
           />
         </ul>
-      </Paper>
-    )
+      )
+    }
+    else {
+      return (
+        <Paper
+          {...PaperProps}
+          className={cx(classes.paper, PaperProps && PaperProps.className)}
+        >
+          <ul className={classes.ul}>
+            <Inspector
+              {...props}
+              key={chromeTheme.name}
+              theme={chromeTheme}
+            />
+          </ul>
+        </Paper>
+      )
+    }
   }
 }
 

@@ -1,0 +1,66 @@
+:Order
+	id
+	time
+	price
+	discount
+	amount
+	status
+	note
+:Group
+	id
+	name
+	status
+:Service
+	id
+	name
+:Individual
+	id
+	firstName
+	middleName
+	lastName
+	birthday
+	registrationTime
+	discount
+	contacts
+	note
+:Material
+	id
+	name
+	type
+	picture
+:Procurement
+	id
+	time
+	value
+:Supply
+	value
+	n
+	x
+	y
+	z
+	isDepleted
+:User
+	id
+	alias
+	name
+	passHash
+	status
+:Product
+	id
+	timeCreated
+	timeReady
+	timeDue
+	type
+	value
+	discount
+	status
+	note
+	
+(:Group)-[:HAS_ACCESS_TO]->(:Service)
+(:User)->[:IS_MEMBER_OF]->(:Group)
+(:User)->[:BELONGS_TO]->(:Individual)
+(:Product)->[:IS_PART_OF]->(:Order)
+(:Order)->[:BELONGS_TO]->(:Individual)
+(:Supply)->[:IS_OF_TYPE]->(:Material)
+(:Supply)->[:PROCURED_DURING]->(:Procurement)
+(:Supply)->[:ORIGINATES_FROM]->(:Supply)
