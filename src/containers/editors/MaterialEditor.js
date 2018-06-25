@@ -6,7 +6,7 @@ import Inspector from '~/components/Inspector'
 import TextField from '~/components/form/TextField'
 import Translated from '~/containers/Translated'
 
-export default class ClientEditor extends React.Component {
+export default class MaterialEditor extends React.Component {
   removeRecord = () => {
     this.props.jsonrpc('removeRecord', this.props.formApi.values)
     this.props.onChange(null)
@@ -17,30 +17,20 @@ export default class ClientEditor extends React.Component {
         {t =>
           <>
             <TextField
-              label={t`First Name`}
-              field="firstName"
+              label={t`Material name`}
+              field="name"
             />
             <TextField
-              label={t`Middle Name`}
-              field="middleName"
+              label={t`Vendor code`}
+              field="vendorCode"
             />
             <TextField
-              label={t`Last Name`}
-              field="lastName"
+              label={t`Material type`}
+              field="type"
             />
             <TextField
-              label={t`Birthday`}
-              field="birthday"
-            />
-            <TextField
-              label={t`Discount`}
-              field="discount"
-              endAdornment={<InputAdornment>%</InputAdornment>}
-            />
-            <TextField
-              multiline
-              label={t`Contacts`}
-              field="contacts"
+              label={t`Picture`}
+              field="picture"
             />
             <TextField
               multiline

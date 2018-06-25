@@ -15,6 +15,9 @@ let RecordEditorWithListView = class RecordEditorWithListView extends React.Comp
     this.onChange(record && (this.props.recordTransform || identity)(record))
   }
 
+  handleAdd = () => this.props.jsonrpc('addRecord', this.props.recordType)
+    .then(record => record && (this.props.recordTransform || identity)(record))
+
   render() {
     const { Editor } = this.props
     return (
@@ -23,6 +26,7 @@ let RecordEditorWithListView = class RecordEditorWithListView extends React.Comp
         loadAdditionalRecords={this.loadAdditionalRecords}
         primaryKey={this.props.primaryRecordProp}
         secondaryKey={this.props.secondaryRecordProp}
+        onAdd={this.handleAdd}
       >
         {(recordId, onChange) => {
           this.onChange = onChange

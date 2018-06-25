@@ -7,6 +7,8 @@ import { withStyles } from '@material-ui/core/styles'
 import Translated from '~/containers/Translated'
 
 import isEqual from 'lodash/isEqual'
+import omit from 'lodash/omit'
+import debounce from 'debounce'
 
 let RecordEditor = class RecordEditor extends React.PureComponent {
   static getDerivedStateFromProps(props, state) {
@@ -52,19 +54,33 @@ let RecordEditor = class RecordEditor extends React.PureComponent {
     })
   }
 
-  onFormChange = ({ values: record }) => {
-    if (!isEqual(this.lastChange, record)) {
+  onFormChange = debounce(
+    ({ values: record }) => {
+      if (
+        !isEqual(this.lastChange, record)
+        && record.timeEdited === this.lastChange.timeEdited
+      ) {
+        this.props.jsonrpc('setRecord', record).then(
+          recordData => this.formApi.setValue(
+            'timeEdited',
+            recordData.timeEdited
+          )
+        )
+        this.props.onChange(record)
+      }
       this.lastChange = record
-      this.props.jsonrpc('setRecord', record)
-      this.props.onChange(record)
-    }
-  }
-
-  renderForm = formApi => (
-    <form onSubmit={formApi.submitForm}>
-      {this.props.children(formApi)}
-    </form>
+    },
+    200
   )
+
+  renderForm = formApi => {
+    this.formApi = formApi
+    return (
+      <form onSubmit={formApi.submitForm}>
+        {this.props.children(formApi)}
+      </form>
+    )
+  }
 
   render() {
     switch (this.state.loadState) {

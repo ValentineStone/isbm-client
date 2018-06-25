@@ -25,9 +25,11 @@
 	note
 :Material
 	id
+	vendorCode
 	name
 	type
 	picture
+	note
 :Procurement
 	id
 	time
@@ -55,6 +57,10 @@
 	discount
 	status
 	note
+:Task
+	id
+	summary
+	dueDate
 	
 (:Group)-[:HAS_ACCESS_TO]->(:Service)
 (:User)->[:IS_MEMBER_OF]->(:Group)

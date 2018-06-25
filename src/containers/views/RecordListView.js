@@ -12,6 +12,8 @@ import withWidth from '@material-ui/core/withWidth'
 import { withStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 
+import AddIcon from '@material-ui/icons/Add'
+
 import escapeRegExp from 'lodash/escapeRegExp'
 
 import Translated from '~/containers/Translated'
@@ -70,6 +72,13 @@ let RecordListView = class RecordListView extends React.PureComponent {
     }
   }
 
+  handleAdd = () => this.props.onAdd().then(record => {
+    this.recordList.addRecord(record)
+    this.props.setParams({
+      id: record.id
+    })
+  })
+
   setRecordListRef = recordList => this.recordList = recordList
 
   hiddenRecordsMessage = count => (
@@ -89,18 +98,19 @@ let RecordListView = class RecordListView extends React.PureComponent {
       id,
       search,
       children,
+      onAdd,
       ...RecordListprops
     } = this.props
 
     const listVisible = width !== 'xs' || !id
     const editorVisible = width !== 'xs' || id
-    const listHeaderVisible = width !== 'xs' && listVisible
+    const listPlateVisible = width !== 'xs' && listVisible
     return (
       <Translated>
         {t =>
           <>
-            {listVisible &&
-              <Paper className={classes.listHeader} elevation={0}>
+            {listPlateVisible &&
+              <Paper className={classes.listPlate} elevation={0}>
                 <Typography variant="subheading" color="secondary">
                   {t`app.name`}
                 </Typography>
@@ -108,7 +118,11 @@ let RecordListView = class RecordListView extends React.PureComponent {
             }
             {listVisible &&
               <section className={classes.listSection}>
-                <div className={classes.searchBar}>
+                <div className={classes.listHeader}>
+                  <Button fullWidth color="primary" onClick={this.handleAdd}>
+                    <AddIcon style={{ marginRight: 8 }} />
+                    {t`Add record`}
+                  </Button>
                   <TextField
                     placeholder={t`Search`}
                     fullWidth
@@ -170,7 +184,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  listHeader: {
+  listPlate: {
     position: 'fixed',
     top: 48,
     width: 300,
@@ -196,11 +210,11 @@ const styles = {
     maxWidth: 450,
   },
   list: {
-    //height: 300,
+    //minHeight: 500,
 
     flex: 1,
   },
-  searchBar: {
+  listHeader: {
     padding: 16
   }
 }

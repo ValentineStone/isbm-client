@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import ContainerDimensions from 'react-container-dimensions'
 import Infinite from 'react-infinite'
+import Translated from '~/containers/Translated'
 
 import cx from '~/utils/cx'
 
@@ -37,7 +38,7 @@ class InfiniteRecordListItem extends React.Component {
               noWrap
               color="inherit"
               variant="subheading"
-              children={primary}
+              children={primary || <Translated>No name</Translated>}
             />
           }
           secondary={
@@ -99,27 +100,6 @@ class InfiniteRecordList extends React.PureComponent {
     this.IndexedRecord.displayName = 'IndexedRecord'
   }
 
-  removeRecord = recordId => {
-    this.setState(state => {
-      const findRecord = record => record[this.props.idKey] === recordId
-
-      const newRecords = [...state.records]
-      const recordIndex = state.records.findIndex(findRecord)
-      if (recordIndex >= 0)
-        newRecords.splice(recordIndex, 1)
-
-      const newVisibleRecords = [...state.visibleRecords]
-      const visibleRecordIndex = state.visibleRecords.findIndex(findRecord)
-      if (visibleRecordIndex >= 0)
-        newVisibleRecords.splice(visibleRecordIndex, 1)
-
-      return {
-        records: newRecords,
-        visibleRecords: newVisibleRecords
-      }
-    })
-  }
-
   setRecord = (recordId, newRecord) => {
     this.setState(state => {
       const findRecord = record => record[this.props.idKey] === recordId
@@ -145,6 +125,13 @@ class InfiniteRecordList extends React.PureComponent {
         visibleRecords: newVisibleRecords
       }
     })
+  }
+
+  addRecord = newRecord => {
+    this.setState(state => ({
+      records: [newRecord, ...state.records],
+      visibleRecords: [newRecord, ...state.visibleRecords]
+    }))
   }
 
   handleInfiniteLoad = async () => {

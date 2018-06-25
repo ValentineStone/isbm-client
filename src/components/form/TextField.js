@@ -14,7 +14,7 @@ function TextField({
   field,
   label,
   validate,
-  fullWidth,
+  fullWidth = true,
   classes,
   pure,
   multiline,
@@ -28,7 +28,7 @@ function TextField({
           error={fieldApi.error}
           fullWidth={fullWidth}
         >
-          <InputLabel>{label}</InputLabel>
+          <InputLabel shrink>{label}</InputLabel>
           <Input
             value={fieldApi.value || ''}
             inputComponent={inputComponent}

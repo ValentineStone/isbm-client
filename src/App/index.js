@@ -19,6 +19,8 @@ import ProfileView from '~/containers/views/ProfileView'
 import EditorView from '~/containers/views/RecordEditorWithListView'
 import InspectorEditor from '~/containers/editors/InspectorEditor'
 import ClientEditor from '~/containers/editors/ClientEditor'
+import MaterialEditor from '~/containers/editors/MaterialEditor'
+import TaskEditor from '~/containers/editors/TaskEditor'
 
 import Translated from '~/containers/Translated'
 
@@ -29,7 +31,11 @@ function clientTransform(record) {
   const displayName = []
   if (record.firstName) displayName.push(record.firstName)
   if (record.lastName) displayName.push(record.lastName)
-  record.displayName = displayName.join(' ') || '*'
+  record.displayName = displayName.join(' ')
+  return record
+}
+function taskTransform(record) {
+  record.dueDate = new Date(record.dueDate).toLocaleString()
   return record
 }
 
@@ -66,7 +72,7 @@ let App = class App extends React.PureComponent {
               <Route path="/profile" component={ProfileView} />
               <Route path="/clients">
                 <EditorView
-                  recordType="Client"
+                  recordType="Individual"
                   primaryRecordProp="displayName"
                   secondaryRecordProp="note"
                   recordTransform={clientTransform}
@@ -77,8 +83,8 @@ let App = class App extends React.PureComponent {
                 <EditorView
                   recordType="Material"
                   primaryRecordProp="name"
-                  secondaryRecordProp="art"
-                  Editor={InspectorEditor}
+                  secondaryRecordProp="vendorCode"
+                  Editor={MaterialEditor}
                 />
               </Route>
               <Route path="/orders">
@@ -93,8 +99,9 @@ let App = class App extends React.PureComponent {
                 <EditorView
                   recordType="Task"
                   primaryRecordProp="summary"
-                  secondaryRecordProp="date"
-                  Editor={InspectorEditor}
+                  secondaryRecordProp="dueDate"
+                  Editor={TaskEditor}
+                  recordTransform={taskTransform}
                 />
               </Route>
               <Route component={UnknownView} />
