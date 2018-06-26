@@ -35,7 +35,7 @@ export default class ClientEditor extends React.Component {
             <TextField
               label={t`Discount`}
               field="discount"
-              endAdornment={<InputAdornment>%</InputAdornment>}
+              suffix="%"
             />
             <TextField
               multiline

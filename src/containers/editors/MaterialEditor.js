@@ -25,12 +25,19 @@ export default class MaterialEditor extends React.Component {
               field="vendorCode"
             />
             <TextField
+              disabled
+              value={t`Frame`}
               label={t`Material type`}
-              field="type"
             />
             <TextField
-              label={t`Picture`}
-              field="picture"
+              label={t`Frame width`}
+              field="frameWidth"
+              suffix={t`m`}
+            />
+            <TextField
+              label={t`Frame price`}
+              field="framePrice"
+              suffix={t`rub`}
             />
             <TextField
               multiline

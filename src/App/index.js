@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import { Route } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { Switch } from '~/context/router'
 
 import AppHeader from './AppHeader'
@@ -21,11 +21,14 @@ import InspectorEditor from '~/containers/editors/InspectorEditor'
 import ClientEditor from '~/containers/editors/ClientEditor'
 import MaterialEditor from '~/containers/editors/MaterialEditor'
 import TaskEditor from '~/containers/editors/TaskEditor'
+import OrderEditor from '~/containers/editors/OrderEditor'
 
 import Translated from '~/containers/Translated'
 
 import faviconDark from '~/assets/favicon-dark.png'
 import faviconLight from '~/assets/favicon-light.png'
+
+import framePriceCalc from '~/utils/framePriceCalc'
 
 function clientTransform(record) {
   const displayName = []
@@ -36,6 +39,11 @@ function clientTransform(record) {
 }
 function taskTransform(record) {
   record.dueDate = new Date(record.dueDate).toLocaleString()
+  return record
+}
+
+function formatOrderBeforeChange(record) {
+  record.price = framePriceCalc(record)
   return record
 }
 
@@ -90,9 +98,10 @@ let App = class App extends React.PureComponent {
               <Route path="/orders">
                 <EditorView
                   recordType="Order"
-                  primaryRecordProp="summary"
-                  secondaryRecordProp="note"
-                  Editor={InspectorEditor}
+                  primaryRecordProp="name"
+                  secondaryRecordProp="summary"
+                  Editor={OrderEditor}
+                  formatBeforeChange={formatOrderBeforeChange}
                 />
               </Route>
               <Route path="/tasks">
@@ -103,6 +112,9 @@ let App = class App extends React.PureComponent {
                   Editor={TaskEditor}
                   recordTransform={taskTransform}
                 />
+              </Route>
+              <Route path="/" exact>
+                <Redirect to="orders" />
               </Route>
               <Route component={UnknownView} />
             </Switch>

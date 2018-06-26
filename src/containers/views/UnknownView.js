@@ -13,6 +13,7 @@ function UnknownView(props) {
     <Translated>
       {t =>
         <>
+          {/*
           <Typography
             variant="display1"
             align="center"
@@ -21,6 +22,7 @@ function UnknownView(props) {
           >
             {t`Error`} 404:
           </Typography>
+          */}
           <Typography
             variant={
               props.width === 'xs'
@@ -33,9 +35,12 @@ function UnknownView(props) {
           >
             {t(pageName)}
           </Typography>
+
+          {/*
           <Typography variant="subheading" align="center">
             {t`This page does not exist, our staff is on the case`}
           </Typography>
+          */}
         </>
       }
     </Translated>

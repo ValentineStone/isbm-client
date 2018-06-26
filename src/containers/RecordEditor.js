@@ -60,11 +60,10 @@ let RecordEditor = class RecordEditor extends React.PureComponent {
         !isEqual(this.lastChange, record)
         && record.timeEdited === this.lastChange.timeEdited
       ) {
+        if (this.props.formatBeforeChange)
+          record = this.props.formatBeforeChange(record)
         this.props.jsonrpc('setRecord', record).then(
-          recordData => this.formApi.setValue(
-            'timeEdited',
-            recordData.timeEdited
-          )
+          recordData => this.formApi.setAllValues(recordData)
         )
         this.props.onChange(record)
       }
