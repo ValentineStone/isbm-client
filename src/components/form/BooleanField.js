@@ -10,36 +10,52 @@ import { withStyles } from '@material-ui/core/styles'
 import Textarea from 'react-textarea-autosize'
 import cx from '~/utils/cx'
 
-function BooleanField({
-  field,
-  label,
-  validate,
-  fullWidth = true,
-  pure,
-  ...restProps
-}) {
-  return (
-    <Field validate={validate} field={field} pure={pure}>
-      {fieldApi =>
-        <FormControl
-          error={fieldApi.error}
-          fullWidth={fullWidth}
-        >
-          <FormControlLabel
-            label={label}
-            control={
-              <Checkbox
-                color="primary"
-                checked={fieldApi.value || false}
-                onChange={(e, checked) => fieldApi.setValue(checked)}
-                {...restProps}
-              />
-            }
-          />
-        </FormControl>
-      }
-    </Field>
-  )
+class BooleanField extends React.Component {
+  handleChange = (e, checked) => {
+    if (!this.props.constant)
+      this.fieldApi.setValue(checked)
+  }
+  renderField = fieldApi => {
+    this.fieldApi = fieldApi
+    const {
+      field,
+      label,
+      validate,
+      fullWidth = true,
+      pure,
+      constant,
+      ...restProps
+    } = this.props
+    return (
+      <FormControl
+        error={fieldApi.error}
+        fullWidth={fullWidth}
+      >
+        <FormControlLabel
+          label={label}
+          control={
+            <Checkbox
+              color="primary"
+              checked={fieldApi.value || false}
+              onChange={this.handleChange}
+              {...restProps}
+            />
+          }
+        />
+      </FormControl>
+    )
+  }
+  render() {
+    return (
+      <Field
+        validate={this.props.validate}
+        field={this.props.field}
+        pure={this.props.pure}
+      >
+        {this.renderField}
+      </Field>
+    )
+  }
 }
 
 export default BooleanField

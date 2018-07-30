@@ -102,6 +102,7 @@ let App = class App extends React.PureComponent {
                   secondaryRecordProp="summary"
                   Editor={OrderEditor}
                   formatBeforeChange={formatOrderBeforeChange}
+                  editorRootPaper={false}
                 />
               </Route>
               <Route path="/tasks">

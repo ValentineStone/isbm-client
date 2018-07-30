@@ -53,6 +53,7 @@ AppHeader = function AppHeader(props) {
 
 const styles = theme => ({
   appBar: {
+    '@media print': { display: 'none !important' },
     position: 'relative',
     zIndex: 1101,
     background: theme.palette.background.paper

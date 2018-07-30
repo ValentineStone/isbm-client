@@ -9,78 +9,98 @@ import { withStyles } from '@material-ui/core/styles'
 import Textarea from 'react-textarea-autosize'
 import cx from '~/utils/cx'
 
-function TextField({
-  onChange,
-  onBlur,
-  field,
-  label,
-  validate,
-  fullWidth = true,
-  classes,
-  pure,
-  multiline,
-  prefix,
-  suffix,
-  ...InputProps
-}) {
-  const inputComponent = multiline ? Textarea : undefined
-  if (field)
-    return (
-      <Field validate={validate} field={field} pure={pure}>
-        {fieldApi =>
-          <FormControl
-            error={fieldApi.error}
-            fullWidth={fullWidth}
-          >
-            <InputLabel shrink>{label}</InputLabel>
-            <Input
-              value={fieldApi.value || ''}
-              inputComponent={inputComponent}
-              {...InputProps}
-              className={cx(classes.multiline, InputProps.className)}
-              onChange={(...args) => {
-                const [e] = args
-                fieldApi.setValue(e.target.value)
-                if (onChange) onChange(...args)
-              }}
-              onBlur={(...args) => {
-                fieldApi.setTouched()
-                if (onBlur) onBlur(...args)
-              }}
-              startAdornment={prefix && <InputAdornment>{prefix}</InputAdornment>}
-              endAdornment={suffix && <InputAdornment>{suffix}</InputAdornment>}
-            />
-            <FormHelperText>
-              {fieldApi.error || fieldApi.warning || fieldApi.success || ''}
-            </FormHelperText>
-          </FormControl>
-        }
-      </Field>
-    )
-  else
+class TextField extends React.Component {
+
+  handleBlur = (...args) => {
+    if (this.fieldApi)
+      this.fieldApi.setTouched()
+    if (this.props.onBlur)
+      this.props.onBlur(...args)
+  }
+
+  handleChange = (...args) => {
+    if (this.fieldApi)
+      this.fieldApi.setValue(args[0].target.value)
+    if (this.props.onChange)
+      this.props.onChange(...args)
+  }
+
+  renderField = fieldApi => {
+    this.fieldApi = fieldApi
+    const {
+      onChange,
+      onBlur,
+      field,
+      label,
+      validate,
+      fullWidth = true,
+      classes,
+      pure,
+      multiline,
+      prefix,
+      suffix,
+      constant,
+      helperText = true,
+      ...InputProps
+    } = this.props
+    const inputComponent = multiline ? Textarea : undefined
     return (
       <FormControl
+        error={fieldApi && fieldApi.error}
         fullWidth={fullWidth}
       >
         <InputLabel shrink>{label}</InputLabel>
         <Input
+          readOnly={constant}
+          value={fieldApi && (fieldApi.value || '')}
           inputComponent={inputComponent}
-          {...InputProps}
-          className={cx(classes.multiline, InputProps.className)}
-          onChange={onChange}
-          onBlur={onBlur}
           startAdornment={prefix && <InputAdornment>{prefix}</InputAdornment>}
           endAdornment={suffix && <InputAdornment>{suffix}</InputAdornment>}
+          {...InputProps}
+          className={cx(classes.multiline, InputProps.className)}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
         />
-        <FormHelperText></FormHelperText>
+        {!(
+          helperText === false
+          || helperText === undefined
+          || helperText === null
+        ) &&
+          <FormHelperText>
+            {fieldApi
+              ? (
+                fieldApi.error
+                || fieldApi.warning
+                || fieldApi.success
+                || ''
+              )
+              : helperText
+            }
+          </FormHelperText>
+        }
       </FormControl>
     )
+  }
+  render() {
+    if (this.props.field)
+      return (
+        <Field
+          validate={this.props.validate}
+          field={this.props.field}
+          pure={this.props.pure}
+        >
+          {this.renderField}
+        </Field>
+      )
+    else
+      return this.renderField()
+  }
 }
 
 const styles = {
   multiline: {
     '& > textarea': {
-      resize: 'none'
+      //resize: 'none'
     }
   }
 }

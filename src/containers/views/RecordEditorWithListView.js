@@ -27,6 +27,7 @@ let RecordEditorWithListView = class RecordEditorWithListView extends React.Comp
         primaryKey={this.props.primaryRecordProp}
         secondaryKey={this.props.secondaryRecordProp}
         onAdd={this.handleAdd}
+        editorRootPaper={this.props.editorRootPaper}
       >
         {(recordId, onChange) => {
           this.onChange = onChange

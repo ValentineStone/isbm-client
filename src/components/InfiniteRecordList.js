@@ -20,7 +20,6 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const RECORD_HEIGHT = 68
 const HIDDEN_RECORDS_MESSAGE_HEIGHT = 40
 
-
 class InfiniteRecordListItem extends React.Component {
   render() {
     const {
@@ -60,15 +59,44 @@ class InfiniteRecordList extends React.PureComponent {
     initialRecords: [],
     loadAdditionalRecords: () => null,
     idKey: 'id',
-    hiddenRecordsMessage: count => count + ' items hidden'
+    hiddenRecordsMessage: count => (
+      <Translated>
+        {t => count === 1
+          ? count + ' ' + t`item hidden`
+          : count + ' ' + t`items hidden`
+        }
+      </Translated>
+    )
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.filter !== state.lastFilter) {
+      let filter = props.filter
+      if (filter && typeof filter === 'string') {
+        const filterText = filter
+        const filterProps = props.filterProps
+        filter = arr => arr.filter(
+          obj => {
+            if (filterProps)
+              return filterProps.some(
+                prop => typeof obj[prop] === 'string'
+                  ? obj[prop].includes(filterText)
+                  : false
+              )
+            else
+              return Object.values(obj).some(
+                str => typeof str === 'string'
+                  ? str.includes(filterText)
+                  : false
+              )
+          }
+        )
+      }
       return {
+        filter,
         lastFilter: props.filter,
-        visibleRecords: props.filter
-          ? props.filter(state.records)
+        visibleRecords: filter
+          ? filter(state.records)
           : state.records
       }
     }
@@ -149,8 +177,8 @@ class InfiniteRecordList extends React.PureComponent {
       if (!this.mounted) return
       if (!canLoadMore) break
       records = records.concat(additionalRecords)
-      visibleRecords = this.props.filter
-        ? this.props.filter(records)
+      visibleRecords = this.state.filter
+        ? this.state.filter(records)
         : records
       this.setState({ records })
     } while (visibleRecords.length <= this.state.visibleRecords.length)
@@ -158,8 +186,8 @@ class InfiniteRecordList extends React.PureComponent {
     this.setState((state, props) => ({
       canLoadMore,
       isLoading: false,
-      visibleRecords: props.filter
-        ? props.filter(records)
+      visibleRecords: state.filter
+        ? state.filter(records)
         : records
     }))
   }

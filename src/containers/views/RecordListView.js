@@ -41,6 +41,11 @@ let RecordListView = class RecordListView extends React.PureComponent {
     }
     return null
   }
+
+  static defaultProps = {
+    editorRootPaper: Paper
+  }
+
   constructor(props) {
     super(props)
     this.state = {}
@@ -57,7 +62,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
   })
 
   handleDeselect = reason => {
-    this.handleEditorChange(undefined)
+    this.props.setParams({ id: undefined })
   }
 
   handleEditorChange = record => {
@@ -81,15 +86,6 @@ let RecordListView = class RecordListView extends React.PureComponent {
 
   setRecordListRef = recordList => this.recordList = recordList
 
-  hiddenRecordsMessage = count => (
-    <Translated>
-      {t => count === 1
-        ? count + ' ' + t`item hidden`
-        : count + ' ' + t`items hidden`
-      }
-    </Translated>
-  )
-
   render() {
 
     const {
@@ -105,47 +101,52 @@ let RecordListView = class RecordListView extends React.PureComponent {
     const listVisible = width !== 'xs' || !id
     const editorVisible = width !== 'xs' || id
     const listPlateVisible = width !== 'xs' && listVisible
+    const EditorRoot = this.props.editorRootPaper ? Paper : 'div'
     return (
       <Translated>
         {t =>
           <>
-            {listPlateVisible &&
-              <Paper className={classes.listPlate} elevation={0}>
-                <Typography variant="subheading" color="secondary">
-                  {t`app.name`}
-                </Typography>
-              </Paper>
-            }
-            {listVisible &&
-              <section className={classes.listSection}>
-                <div className={classes.listHeader}>
-                  <Button fullWidth color="primary" onClick={this.handleAdd}>
-                    <AddIcon style={{ marginRight: 8 }} />
-                    {t`Add record`}
-                  </Button>
-                  <TextField
-                    placeholder={t`Search`}
-                    fullWidth
-                    value={search}
-                    onInput={this.handleSearchInput}
-                  />
-                </div>
-                <RecordList
-                  listRef={this.setRecordListRef}
-                  className={classes.list}
-                  filter={this.state.filter}
-                  active={id}
-                  onRecordClick={this.handleRecordClick}
-                  hiddenRecordsMessage={this.hiddenRecordsMessage}
-                  {...RecordListprops}
+            <section
+              className={classes.listSection}
+              style={{ display: listVisible ? 'flex' : 'none' }}
+            >
+              {listPlateVisible &&
+                <Paper className={classes.listPlate} elevation={0}>
+                  <Typography variant="subheading" color="secondary">
+                    {t`app.name`}
+                  </Typography>
+                </Paper>
+              }
+              <div className={classes.listHeader}>
+                <Button fullWidth color="primary" onClick={this.handleAdd}>
+                  <AddIcon style={{ marginRight: 8 }} />
+                  {t`Add record`}
+                </Button>
+                <TextField
+                  placeholder={t`Search`}
+                  fullWidth
+                  value={search}
+                  onInput={this.handleSearchInput}
                 />
-                <Divider />
+              </div>
+              <RecordList
+                listRef={this.setRecordListRef}
+                className={classes.list}
+                filter={this.state.filter}
+                active={id}
+                onRecordClick={this.handleRecordClick}
+                {...RecordListprops}
+              />
+              <Divider />
 
-              </section>
-            }
+            </section>
             {editorVisible &&
               <section className={classes.editorSection}>
-                <Paper className={classes.editorPaper}>
+                <EditorRoot className={
+                  EditorRoot === Paper
+                    ? classes.editorPaper
+                    : classes.editorRootDiv
+                }>
                   {!listVisible &&
                     <Button fullWidth onClick={this.handleDeselect}>
                       {t`Back to list`}
@@ -159,7 +160,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
                       </Typography>
                     )
                   }
-                </Paper>
+                </EditorRoot>
               </section>
             }
           </>
@@ -171,6 +172,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
 
 const styles = {
   listSection: {
+    '@media print': { display: 'none !important' },
     width: '100%',
     maxWidth: 300,
     overflowY: 'auto',
@@ -208,6 +210,10 @@ const styles = {
     margin: '0 auto',
     padding: 16,
     maxWidth: 450,
+  },
+  editorRootDiv: {
+    margin: '0 auto',
+    maxWidth: 'max-content',
   },
   list: {
     //minHeight: 500,

@@ -1,0 +1,70 @@
+<canvas></canvas>
+<script defer>
+  var tmp = atob(location.search.slice(1)).split('.png')
+  var imgSrc = tmp[0] + '.png'
+  var order = JSON.parse(decodeURIComponent(tmp[1]))
+
+  var canvas = document.createElement('canvas')
+  var context = canvas.getContext('2d')
+  canvas.style.height = '90vh'
+
+  var img = document.createElement('img')
+  img.addEventListener('load', drawCheck)
+  img.src = imgSrc
+
+  var pre = document.createElement('pre')
+  pre.textContent = JSON.stringify(order, null, 2)
+  
+
+  //document.body.appendChild(pre)
+  document.body.appendChild(canvas)
+
+  function drawCheck() {
+    canvas.width = img.width
+    canvas.height = img.height
+    context.drawImage(img, 0, 0)
+    
+
+    context.fillStyle = '#ccccff'
+
+    context.font='25px monospace'
+
+    context.fillText(order.id, 295, 100)
+
+    context.fillStyle = '#66afe0'
+
+    context.font='40px monospace'
+    
+    context.fillText('Оформление работы', 350, 427)
+    context.fillText(order.price.toFixed(0) + ' руб', 440, 495)
+    context.fillText(
+      new Date(order.placed).toLocaleDateString('ru'),
+      540, 1040
+    )
+    
+    context.font='30px monospace'
+
+    context.fillText(
+      (order.workWidth * 100).toFixed(0)
+      + 'x'
+      + (order.workHeight * 100).toFixed(0)
+      + 'см',
+      126, 687
+    )
+    context.fillText(order.frameName, 342, 687)
+    if (order.passepartoutWidth)
+      context.fillText(
+        (order.passepartoutWidth * 100).toFixed(2)
+        + 'см'
+        + (order.passepartoutCount > 1 ? ' x ' + order.passepartoutCount : ''),
+        576, 687
+      )
+
+    context.font='60px monospace'
+
+    if (order.glass && order.glass !== 'none')
+      context.fillText('✔', 285, 945)
+    if (order.photoPrinting || order.canvasPrinting)
+      context.fillText('✔', 526, 945)
+  }
+</script>

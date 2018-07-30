@@ -10,7 +10,7 @@ import withWidth from '@material-ui/core/withWidth'
 import AppBar from '@material-ui/core/AppBar'
 
 import WarehouseIcon from '@material-ui/icons/Store'
-import SettingsIcon from '@material-ui/icons/Settings'
+import SettingsIcon from '@material-ui/icons/SettingsSharp'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import TasksIcon from '@material-ui/icons/AssignmentTurnedIn'
 import ProductsIcon from '@material-ui/icons/CropOriginal'
@@ -81,6 +81,7 @@ const styles = theme => ({
     padding: '0 8px'
   },
   appBar: {
+    '@media print': { display: 'none !important' },
     background: theme.palette.background.paper
   }
 })

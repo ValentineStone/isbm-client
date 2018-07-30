@@ -14,36 +14,54 @@ import { withStyles } from '@material-ui/core/styles'
 import Textarea from 'react-textarea-autosize'
 import cx from '~/utils/cx'
 
-function SelectField({
-  field,
-  label,
-  validate,
-  fullWidth = true,
-  defaultValue,
-  pure,
-  options,
-  ...restProps
-}) {
-  return (
-    <Field validate={validate} field={field} pure={pure}>
-      {fieldApi =>
-        <FormControl
-          error={fieldApi.error}
-          fullWidth={fullWidth}
+class SelectField extends React.Component {
+  handleChange = e =>
+    this.fieldApi.setValue(e.target.value)
+  render() {
+    return (
+      <Field
+        validate={this.props.validate}
+        field={this.props.field}
+        pure={this.props.pure}
+      >
+        {this.renderField}
+      </Field>
+    )
+  }
+  renderField = fieldApi => {
+    this.fieldApi = fieldApi
+    const {
+      field,
+      label,
+      validate,
+      fullWidth = true,
+      defaultValue,
+      pure,
+      options,
+      helperText = true,
+      constant,
+      ...restProps
+    } = this.props
+    return (
+      <FormControl
+        error={fieldApi.error}
+        fullWidth={fullWidth}
+      >
+        <InputLabel shrink>{label}</InputLabel>
+        <Select
+          open={constant ? false : undefined}
+          {...restProps}
+          value={fieldApi.value || defaultValue}
+          onChange={this.handleChange}
         >
-          <InputLabel shrink>{label}</InputLabel>
-          <Select
-            value={fieldApi.value || defaultValue}
-            onChange={e => fieldApi.setValue(e.target.value)}
-          >
-            {Object.entries(options).map(([value, label]) =>
-              <MenuItem key={value} value={value}>{label}</MenuItem>)
-            }
-          </Select>
-        </FormControl>
-      }
-    </Field>
-  )
+          {Object.entries(options).map(([value, label]) =>
+            <MenuItem key={value} value={value}>{label}</MenuItem>)
+          }
+        </Select>
+        {helperText && <FormHelperText></FormHelperText>}
+      </FormControl>
+    )
+  }
 }
 
 export default SelectField
