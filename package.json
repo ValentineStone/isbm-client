@@ -20,6 +20,7 @@
     "babel-loader": "^8.0.0-beta.4",
     "html-webpack-plugin": "^3.2.0",
     "ini-loader": "^1.0.1",
+    "url-loader": "^1.0.1",
     "webpack": "^4.16.3",
     "webpack-cli": "^2.1.5",
     "webpack-dev-server": "^3.1.5"
@@ -33,6 +34,7 @@
     "es6-promise": "^4.2.4",
     "escape-string-regexp": "^1.0.5",
     "file-loader": "^1.1.11",
+    "json5": "^1.0.1",
     "lodash": "^4.17.10",
     "material-ui-pickers": "^1.0.0-rc.12",
     "react": "^16.4.1",

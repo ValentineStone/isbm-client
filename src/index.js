@@ -12,7 +12,7 @@ import { Provider as RouteProvider } from '~/context/router'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider as ReduxProvider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
-import loggerMiddleware from '~/utils/redux-logger'
+import LoggerMiddleware from '~/utils/redux-logger'
 
 import rootReducer from '~/reducers'
 import initializeApp from '~/actions/initializeApp'
@@ -24,7 +24,7 @@ import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils'
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(thunkMiddleware, loggerMiddleware)
+  applyMiddleware(thunkMiddleware, new LoggerMiddleware(false))
 )
 
 ReactDOM.render(

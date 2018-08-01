@@ -1,4 +1,6 @@
 import React from 'react'
+import { renderToStaticMarkup as renderHtml } from 'react-dom/server'
+import JSON5 from 'json5'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
@@ -17,33 +19,121 @@ import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
 import EditIcon from '@material-ui/icons/Edit'
 
-import orderCheckPng from '~/assets/check.png'
-import orderCheckHtml from '~/assets/check.pure.html'
-import singleOrderHtml from '~/assets/single-order.pure.html'
+import goldenLogoPng from '~/assets/golden-logo.png'
 
-const printCheck = order => {
+import jsonToJSX from '~/utils/jsonToJSX'
+
+const onloadAll = (...images) => {
+  return Promise.all(images.map(img => 
+    new Promise(r =>
+      img.addEventListener('load', r)
+    )
+  ))
+}
+
+const printCheck = (order, rootNode) => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
+  const logo = new Image()
   const image = new Image()
-  image.addEventListener('load', () => {
-    canvas.width = image.width
-    canvas.height = image.height
 
-    context.drawImage(image, 0, 0)
+  const renderedHtml = renderHtml(
+    <svg xmlns="http://www.w3.org/2000/svg" width="296" height="420">
+      <foreignObject width="100%" height="100%">
+        <main xmlns="http://www.w3.org/1999/xhtml" style={{
+          height: '100%',
+          //background: '#1e1e1e',
+        }}>
+          <style>{`
+            * { box-sizing: border-box }
+            .root { color: #777799 }
+            .boolean { color: #569CD6 }
+            .string { color: #CE9178 }
+            .number { color: #A6CEA8 }
+            .undefined { color: #569CD6 }
+            .null { color: #569CD6 }
+          `}</style>
+          <div style={{
+            paddingTop: 1,
+            position: 'absolute',
+            //opacity: .2,
+          }}>
+            <pre>
+              {jsonToJSX(order)}
+            </pre>
+          </div>
+          <div style={{
+            position: 'absolute',
+            //top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, 0/*-50%*/)',
+            background: 'rgba(255,255,255,.8)',
+            padding: '1em',
+            fontSize: 8,
+          }}>
+            <div style={{textAlign: 'center'}}>
+              <h1>Золотой Квадрат</h1>
+              <h2>Багетная мастерская</h2>
+            </div>
+            <table border="1">
+              <tbody>
+                <tr>
+                  <td>Артикул рамы</td>
+                  <td>{order.frameVendorCode}</td>
+                </tr>
+                <tr>
+                  <td>Ширина рамы</td>
+                  <td>{order.frameWidth * 100} см</td>
+                </tr>
+                <tr>
+                  <td>Цена рамы</td>
+                  <td>{order.framePrice} руб</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </foreignObject>
+    </svg>
+  )
+  image.src = 'data:image/svg+xml,' + encodeURIComponent(renderedHtml)
+  logo.src = goldenLogoPng
+  onloadAll(image, logo).then(() => {
+    canvas.width = 1480
+    canvas.height = 2100
 
+    context.drawImage(image, 0, 0, canvas.width, canvas.height)
+    context.drawImage(logo, 0, 0, 50, 50)
 
     canvas.toBlob(blob => {
-      const w = window.open('', '_blank')
-      w.document.write(`
-        <!DOCTYPE html>
-        <title>Печать</title>
-        <script>function printImage() { print(); close() }</script>
-        <img src="${URL.createObjectURL(blob)}" onload="printImage()">
-      `)
+      window.open('', '_blank').document.write(renderHtml(
+        <>
+          <title>Печать</title>
+          <body style={{ margin: 0 }}>
+            <img
+              src={URL.createObjectURL(blob)}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100vh',
+                margin: '0 auto',
+                display: 'block'
+              }}
+            />
+            <script>
+              /*
+              document.currentScript.previousSibling.onload = {(
+                function () {
+                  print()
+                  close()
+                }
+              ).toString()}
+              */
+            </script>
+          </body>
+        </>
+      ))
     })
-
   })
-  image.src = orderCheckPng
 }
 
 const styles = {
