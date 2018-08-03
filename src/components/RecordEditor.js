@@ -32,7 +32,6 @@ class RecordEditor extends React.PureComponent {
       <form onSubmit={formApi.submitForm}>
         <Translated>
           {t => children.map(fieldModel => {
-            console.log('t => model.map')
             if (React.isValidElement(fieldModel)) {
               return fieldModel
             }

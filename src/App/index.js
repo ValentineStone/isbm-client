@@ -28,8 +28,6 @@ import Translated from '~/containers/Translated'
 import faviconDark from '~/assets/favicon-dark.png'
 import faviconLight from '~/assets/favicon-light.png'
 
-import framePriceCalc from '~/utils/framePriceCalc'
-
 function clientTransform(record) {
   const displayName = []
   if (record.firstName) displayName.push(record.firstName)
@@ -101,7 +99,6 @@ let App = class App extends React.PureComponent {
                   primaryRecordProp="name"
                   secondaryRecordProp="summary"
                   Editor={OrderEditor}
-                  formatBeforeChange={formatOrderBeforeChange}
                   editorRootPaper={false}
                 />
               </Route>

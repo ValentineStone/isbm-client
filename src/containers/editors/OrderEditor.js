@@ -1,6 +1,4 @@
 import React from 'react'
-import { renderToStaticMarkup as renderHtml } from 'react-dom/server'
-import JSON5 from 'json5'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
@@ -19,122 +17,9 @@ import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
 import EditIcon from '@material-ui/icons/Edit'
 
-import goldenLogoPng from '~/assets/golden-logo.png'
+import printCheck from './printCheck'
 
-import jsonToJSX from '~/utils/jsonToJSX'
-
-const onloadAll = (...images) => {
-  return Promise.all(images.map(img => 
-    new Promise(r =>
-      img.addEventListener('load', r)
-    )
-  ))
-}
-
-const printCheck = (order, rootNode) => {
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-  const logo = new Image()
-  const image = new Image()
-
-  const renderedHtml = renderHtml(
-    <svg xmlns="http://www.w3.org/2000/svg" width="296" height="420">
-      <foreignObject width="100%" height="100%">
-        <main xmlns="http://www.w3.org/1999/xhtml" style={{
-          height: '100%',
-          //background: '#1e1e1e',
-        }}>
-          <style>{`
-            * { box-sizing: border-box }
-            .root { color: #777799 }
-            .boolean { color: #569CD6 }
-            .string { color: #CE9178 }
-            .number { color: #A6CEA8 }
-            .undefined { color: #569CD6 }
-            .null { color: #569CD6 }
-          `}</style>
-          <div style={{
-            paddingTop: 1,
-            position: 'absolute',
-            //opacity: .2,
-          }}>
-            <pre>
-              {jsonToJSX(order)}
-            </pre>
-          </div>
-          <div style={{
-            position: 'absolute',
-            //top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, 0/*-50%*/)',
-            background: 'rgba(255,255,255,.8)',
-            padding: '1em',
-            fontSize: 8,
-          }}>
-            <div style={{textAlign: 'center'}}>
-              <h1>Золотой Квадрат</h1>
-              <h2>Багетная мастерская</h2>
-            </div>
-            <table border="1">
-              <tbody>
-                <tr>
-                  <td>Артикул рамы</td>
-                  <td>{order.frameVendorCode}</td>
-                </tr>
-                <tr>
-                  <td>Ширина рамы</td>
-                  <td>{order.frameWidth * 100} см</td>
-                </tr>
-                <tr>
-                  <td>Цена рамы</td>
-                  <td>{order.framePrice} руб</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </main>
-      </foreignObject>
-    </svg>
-  )
-  image.src = 'data:image/svg+xml,' + encodeURIComponent(renderedHtml)
-  logo.src = goldenLogoPng
-  onloadAll(image, logo).then(() => {
-    canvas.width = 1480
-    canvas.height = 2100
-
-    context.drawImage(image, 0, 0, canvas.width, canvas.height)
-    context.drawImage(logo, 0, 0, 50, 50)
-
-    canvas.toBlob(blob => {
-      window.open('', '_blank').document.write(renderHtml(
-        <>
-          <title>Печать</title>
-          <body style={{ margin: 0 }}>
-            <img
-              src={URL.createObjectURL(blob)}
-              style={{
-                maxWidth: '100%',
-                maxHeight: '100vh',
-                margin: '0 auto',
-                display: 'block'
-              }}
-            />
-            <script>
-              /*
-              document.currentScript.previousSibling.onload = {(
-                function () {
-                  print()
-                  close()
-                }
-              ).toString()}
-              */
-            </script>
-          </body>
-        </>
-      ))
-    })
-  })
-}
+import framePriceCalc from '~/utils/framePriceCalc'
 
 const styles = {
   deleteButton: {
@@ -199,6 +84,15 @@ class ClientEditor extends React.Component {
         !props.formApi.values.frameName
         && !props.formApi.values.placed
     }
+    props.subsribeToChange(this.handleChange)
+  }
+
+  handleChange = (formState, formApi) => {
+    if (formApi && formState) {
+      const price = framePriceCalc(formState.values)
+      if (price !== formState.values.price)
+        formApi.setValue('price', framePriceCalc(formState.values))
+    }
   }
 
   printCheck = () => {
@@ -245,12 +139,10 @@ class ClientEditor extends React.Component {
   })
 
   handleFrameClick = frame => {
-    this.props.formApi.setAllValues({
-      frameName: frame.name,
-      frameVendorCode: frame.vendorCode,
-      frameWidth: frame.frameWidth,
-      framePrice: frame.framePrice,
-    })
+    this.props.formApi.setValue('frameName', frame.name)
+    this.props.formApi.setValue('frameVendorCode', frame.vendorCode)
+    this.props.formApi.setValue('frameWidth', frame.frameWidth)
+    this.props.formApi.setValue('framePrice', frame.framePrice)
     this.setState({ searchingFrame: false })
   }
 
@@ -291,14 +183,16 @@ class ClientEditor extends React.Component {
               />
               <TextField
                 label={t`Work width`}
+                scale={0.01}
                 field="workWidth"
-                suffix={t`m`}
+                suffix={t`cm`}
                 constant={locked}
               />
               <TextField
                 label={t`Work height`}
+                scale={0.01}
                 field="workHeight"
-                suffix={t`m`}
+                suffix={t`cm`}
                 constant={locked}
               />
               <div className={classes.marginBottom16}>
@@ -335,9 +229,7 @@ class ClientEditor extends React.Component {
                       ListProps={{ style: { height: 200 } }}
                       primaryKey="name"
                       secondaryKey="vendorCode"
-                      //filter={this.state.filter}
                       onRecordClick={this.handleFrameClick}
-                      //hiddenRecordsMessage={this.hiddenRecordsMessage}
                       loadAdditionalRecords={this.loadAdditionalFrames}
                       filter={this.state.frameSearchFilter}
                       filterProps={this.frameSearchFilterProps}
@@ -373,7 +265,8 @@ class ClientEditor extends React.Component {
               <TextField
                 label={t`Passepartout width`}
                 field="passepartoutWidth"
-                suffix={t`m`}
+                scale={0.01}
+                suffix={t`cm`}
                 constant={locked}
               />
               {Boolean(Number(values.passepartoutWidth)) &&
@@ -383,6 +276,13 @@ class ClientEditor extends React.Component {
                   constant={locked}
                 />
               }
+              <TextField
+                label={t`Photoshop`}
+                field="photoshopPrice"
+                scale={1}
+                suffix={t`rub`}
+                constant={locked}
+              />
               <SelectField
                 label={t`Glass`}
                 field="glass"
@@ -436,6 +336,11 @@ class ClientEditor extends React.Component {
                 <BooleanField
                   label={t`Mirror`}
                   field="mirror"
+                  constant={locked}
+                />
+                <BooleanField
+                  label={t`Underframe`}
+                  field="underframe"
                   constant={locked}
                 />
               </Paper>

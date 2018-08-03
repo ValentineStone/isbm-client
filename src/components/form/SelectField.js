@@ -14,6 +14,8 @@ import { withStyles } from '@material-ui/core/styles'
 import Textarea from 'react-textarea-autosize'
 import cx from '~/utils/cx'
 
+const dummyFunction = () => {}
+
 class SelectField extends React.Component {
   handleChange = e =>
     this.fieldApi.setValue(e.target.value)
@@ -50,6 +52,7 @@ class SelectField extends React.Component {
         <InputLabel shrink>{label}</InputLabel>
         <Select
           open={constant ? false : undefined}
+          onOpen={dummyFunction}
           {...restProps}
           value={fieldApi.value || defaultValue}
           onChange={this.handleChange}
@@ -58,7 +61,7 @@ class SelectField extends React.Component {
             <MenuItem key={value} value={value}>{label}</MenuItem>)
           }
         </Select>
-        {helperText && <FormHelperText></FormHelperText>}
+        {helperText && <FormHelperText>{helperText || ''}</FormHelperText>}
       </FormControl>
     )
   }

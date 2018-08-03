@@ -12,6 +12,8 @@ import ContainerDimensions from 'react-container-dimensions'
 import Infinite from 'react-infinite'
 import Translated from '~/containers/Translated'
 
+import escapeRegExp from 'lodash/escapeRegExp'
+
 import cx from '~/utils/cx'
 
 
@@ -74,19 +76,24 @@ class InfiniteRecordList extends React.PureComponent {
       let filter = props.filter
       if (filter && typeof filter === 'string') {
         const filterText = filter
+        const filterRegExp = new RegExp(
+          escapeRegExp(filterText)
+            .replace(/е|ё/g, '(е|ё)'),
+          'i'
+        )
         const filterProps = props.filterProps
         filter = arr => arr.filter(
           obj => {
             if (filterProps)
               return filterProps.some(
                 prop => typeof obj[prop] === 'string'
-                  ? obj[prop].includes(filterText)
+                  ? obj[prop].match(filterRegExp)
                   : false
               )
             else
               return Object.values(obj).some(
                 str => typeof str === 'string'
-                  ? str.includes(filterText)
+                  ? str.match(filterRegExp)
                   : false
               )
           }

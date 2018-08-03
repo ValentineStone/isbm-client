@@ -55,28 +55,34 @@ let RecordEditor = class RecordEditor extends React.PureComponent {
   }
 
   onFormChange = debounce(
-    ({ values: record }) => {
-      if (
-        !isEqual(this.lastChange, record)
-        && record.timeEdited === this.lastChange.timeEdited
-      ) {
-        if (this.props.formatBeforeChange)
-          record = this.props.formatBeforeChange(record)
-        this.props.jsonrpc('setRecord', record).then(
-          recordData => this.formApi.setAllValues(recordData)
-        )
-        this.props.onChange(record)
+    (formState, formApi) => {
+      if (formState && formApi) {
+        if (this.onChangeCallback)
+          this.onChangeCallback(formState, formApi)
+        let record = formState.values
+        if (
+          !isEqual(this.lastChange, record)
+          && record.timeEdited === this.lastChange.timeEdited
+        ) {
+          this.props.jsonrpc('setRecord', record)
+            //.then(recordData => this.formApi.setAllValues(recordData))
+          this.props.onChange(record)
+        }
+        this.lastChange = record
       }
-      this.lastChange = record
     },
     200
   )
+
+  subsribeToChange = callback => this.onChangeCallback = callback
 
   renderForm = formApi => {
     this.formApi = formApi
     return (
       <form onSubmit={formApi.submitForm}>
-        {this.props.children(formApi)}
+        {this.props.children(formApi, {
+          subsribeToChange: this.subsribeToChange
+        })}
       </form>
     )
   }

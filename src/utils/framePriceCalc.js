@@ -15,7 +15,8 @@ export default function framePriceCalc({
   hardboard = false,
   gluing = false,
   mirror = false,
-
+  photoshopPrice = 0,
+  underframe = false,
 } = {}) {
   workWidth = Number(workWidth)
   workHeight = Number(workHeight)
@@ -56,6 +57,8 @@ export default function framePriceCalc({
   let hardboardTotal = hardboard ? workArea * 500 : 0
   let gluingTotal = gluing ? workArea * 900 : 0
   let mirrorTotal = mirror ? workArea * 2500 : 0
+  let photoshopTotal = photoshopPrice
+  let underframeTotal = Number(underframe) * (workPerimeter + 0.32) * 200
 
   let extrasTotal =
     embroideryStretchingTotal
@@ -71,10 +74,10 @@ export default function framePriceCalc({
     + hardboardTotal
     + gluingTotal
     + mirrorTotal
+    + photoshopTotal
+    + underframeTotal
 
   let total = montageTotal + frameTotal + extrasTotal
-
-  console.log(total)
 
   return total * 1.1
 }

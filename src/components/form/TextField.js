@@ -19,8 +19,11 @@ class TextField extends React.Component {
   }
 
   handleChange = (...args) => {
+    let value = args[0].target.value
+    if (typeof this.props.scale === 'number')
+      value = Number(value) * this.props.scale
     if (this.fieldApi)
-      this.fieldApi.setValue(args[0].target.value)
+      this.fieldApi.setValue(value)
     if (this.props.onChange)
       this.props.onChange(...args)
   }
@@ -40,10 +43,19 @@ class TextField extends React.Component {
       prefix,
       suffix,
       constant,
+      scale,
       helperText = true,
       ...InputProps
     } = this.props
     const inputComponent = multiline ? Textarea : undefined
+
+    let value
+    if (fieldApi) {
+      value = fieldApi.value
+      if (typeof this.props.scale === 'number')
+        value = String(+(Number(value || 0) / this.props.scale).toFixed(2))
+    }
+
     return (
       <FormControl
         error={fieldApi && fieldApi.error}
@@ -52,7 +64,7 @@ class TextField extends React.Component {
         <InputLabel shrink>{label}</InputLabel>
         <Input
           readOnly={constant}
-          value={fieldApi && (fieldApi.value || '')}
+          defaultValue={value}
           inputComponent={inputComponent}
           startAdornment={prefix && <InputAdornment>{prefix}</InputAdornment>}
           endAdornment={suffix && <InputAdornment>{suffix}</InputAdornment>}
@@ -74,7 +86,7 @@ class TextField extends React.Component {
                 || fieldApi.success
                 || ''
               )
-              : helperText
+              : helperText || ''
             }
           </FormHelperText>
         }
@@ -100,7 +112,7 @@ class TextField extends React.Component {
 const styles = {
   multiline: {
     '& > textarea': {
-      //resize: 'none'
+      resize: 'none'
     }
   }
 }

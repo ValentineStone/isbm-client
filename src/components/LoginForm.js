@@ -34,7 +34,7 @@ LoginForm = class LoginForm extends React.PureComponent {
               >
                 {this.state.error &&
                   <FormHelperText error>
-                    {t(this.state.error)}
+                    {t(this.state.error) || ''}
                   </FormHelperText>
                 }
                 <TextField

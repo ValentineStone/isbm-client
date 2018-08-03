@@ -36,10 +36,10 @@ let RecordEditorWithListView = class RecordEditorWithListView extends React.Comp
               recordId={recordId}
               recordType={this.props.recordType}
               onChange={this.handleChange}
-              formatBeforeChange={this.props.formatBeforeChange}
             >
-              {formApi =>
+              {(formApi, options) =>
                 <Editor
+                  {...options}
                   formApi={formApi}
                   jsonrpc={this.props.jsonrpc}
                   onChange={this.handleChange}
