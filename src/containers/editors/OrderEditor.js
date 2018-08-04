@@ -32,6 +32,9 @@ const styles = {
   marginBottom16: {
     marginBottom: 16
   },
+  marginBottom8: {
+    marginBottom: 8
+  },
   frameFieldHeader: {
     display: 'flex',
     '& > :first-child': {
@@ -169,6 +172,15 @@ class ClientEditor extends React.Component {
                     .toLocaleString(i18n.lang)}
                 </Typography>
               }
+              <div className={classes.marginBottom8}>
+                <Typography variant="caption"  style={{ display: 'inline' }}>
+                  {t`Order number`}
+                </Typography>
+                <Typography style={{ float: 'right' }}>
+                  {values.indexOfType}
+                </Typography>
+              </div>
+              <Divider className={classes.marginBottom8}/>
               <TextField
                 multiline
                 label={t`Name[object]`}

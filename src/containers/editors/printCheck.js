@@ -51,7 +51,7 @@ const printCheck = (order, rootNode) => {
           <div style={{ padding: '0 1em' }}>
             <div className="id">
               <b>Заказ №</b>
-              <code style={{float: 'right'}}>{order.id}</code>
+              <code style={{float: 'right'}}>{order.indexOfType}</code>
             </div>
             <div className="b">Размер работы</div>
             <div className="details">
@@ -162,15 +162,13 @@ const printCheck = (order, rootNode) => {
                 display: 'block',
               }}
             />
-            <script>
-              /*
+            <script> 
               document.currentScript.previousSibling.onload = {(
                 function () {
                   print()
                   close()
                 }
               ).toString()}
-              */
             </script>
           </body>
         </>
