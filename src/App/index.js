@@ -45,6 +45,8 @@ function formatOrderBeforeChange(record) {
   return record
 }
 
+const orderFilterProps = ['indexOfType', 'name', 'frameName']
+
 let App = class App extends React.PureComponent {
   render() {
     const { props } = this
@@ -79,7 +81,7 @@ let App = class App extends React.PureComponent {
               <Route path="/clients">
                 <EditorView
                   recordType="Individual"
-                  primaryRecordProp="displayName"
+                  primaryRecordProp="fullName"
                   secondaryRecordProp="note"
                   recordTransform={clientTransform}
                   Editor={ClientEditor}
@@ -100,6 +102,7 @@ let App = class App extends React.PureComponent {
                   secondaryRecordProp="summary"
                   Editor={OrderEditor}
                   editorRootPaper={false}
+                  filterProps={orderFilterProps}
                 />
               </Route>
               <Route path="/tasks">

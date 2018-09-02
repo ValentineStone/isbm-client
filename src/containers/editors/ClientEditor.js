@@ -16,6 +16,7 @@ export default class ClientEditor extends React.Component {
       <Translated keyed>
         {t =>
           <>
+            {/*
             <TextField
               label={t`First Name`}
               field="firstName"
@@ -27,6 +28,11 @@ export default class ClientEditor extends React.Component {
             <TextField
               label={t`Last Name`}
               field="lastName"
+            />
+            */}
+            <TextField
+              label={t`Full name`}
+              field="fullName"
             />
             <TextField
               label={t`Birthday`}

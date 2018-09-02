@@ -32,7 +32,8 @@ export default class MaterialEditor extends React.Component {
             <TextField
               label={t`Frame width`}
               field="frameWidth"
-              suffix={t`m`}
+              suffix={t`cm`}
+              scale={0.01}
             />
             <TextField
               label={t`Frame price`}

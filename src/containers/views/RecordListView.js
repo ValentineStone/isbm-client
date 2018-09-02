@@ -132,7 +132,7 @@ let RecordListView = class RecordListView extends React.PureComponent {
               <RecordList
                 listRef={this.setRecordListRef}
                 className={classes.list}
-                filter={this.state.filter}
+                filter={this.state.search}
                 active={id}
                 onRecordClick={this.handleRecordClick}
                 {...RecordListprops}

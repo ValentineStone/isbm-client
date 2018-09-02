@@ -10,8 +10,11 @@ import Inspector from '~/components/Inspector'
 import BooleanField from '~/components/form/BooleanField'
 import TextField from '~/components/form/TextField'
 import SelectField from '~/components/form/SelectField'
+import RecordField from '~/components/form/RecordSelectorField'
 import Translated from '~/containers/Translated'
 import RecordList from '~/components/InfiniteRecordList'
+
+import RecordFetcher from '~/containers/RecordFetcher'
 
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
@@ -20,6 +23,9 @@ import EditIcon from '@material-ui/icons/Edit'
 import printCheck from './printCheck'
 
 import framePriceCalc from '~/utils/framePriceCalc'
+
+const FRAME_SEARCH_FILTER_PROPS = ['name', 'vendorCode']
+const CLIENT_SEARCH_FILTER_PROPS = ['fullName', 'contacts']
 
 const styles = {
   deleteButton: {
@@ -34,12 +40,6 @@ const styles = {
   },
   marginBottom8: {
     marginBottom: 8
-  },
-  frameFieldHeader: {
-    display: 'flex',
-    '& > :first-child': {
-      flex: 1
-    }
   },
   root: {
     display: 'flex',
@@ -79,7 +79,7 @@ const styles = {
   }
 }
 
-class ClientEditor extends React.Component {
+class OrderEditor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -107,20 +107,6 @@ class ClientEditor extends React.Component {
     this.props.onChange(null)
   }
 
-  toggleFrameSearch = () => {
-    if (!this.props.formApi.values.placed)
-      this.setState(state => ({
-        searchingFrame: !state.searchingFrame,
-        frameSearchFilter: ''
-      }))
-  }
-
-  handleFrameSearchTextChange = e => this.setState({
-    frameSearchFilter: e.target.value
-  })
-
-  frameSearchFilterProps = ['name', 'vendorCode']
-
   handlePlaceOrder = () => {
     const values = this.props.formApi.values
     this.props.jsonrpc('addRecord', 'Task', {
@@ -135,18 +121,16 @@ class ClientEditor extends React.Component {
       this.createSummary(values))
   }
 
-  loadAdditionalFrames = records => this.props.jsonrpc('getRecords', {
-    limit: records.length < 16 ? 16 : records.length,
-    skip: records.length,
-    type: 'Material'
-  })
-
   handleFrameClick = frame => {
     this.props.formApi.setValue('frameName', frame.name)
     this.props.formApi.setValue('frameVendorCode', frame.vendorCode)
     this.props.formApi.setValue('frameWidth', frame.frameWidth)
     this.props.formApi.setValue('framePrice', frame.framePrice)
-    this.setState({ searchingFrame: false })
+    this.props.formApi.setValue('frameId', frame.id)
+  }
+
+  handleClientClick = client => {
+    this.props.formApi.setValue('clientId', client.id)
   }
 
   createSummary = order => {
@@ -173,14 +157,31 @@ class ClientEditor extends React.Component {
                 </Typography>
               }
               <div className={classes.marginBottom8}>
-                <Typography variant="caption"  style={{ display: 'inline' }}>
+                <Typography variant="caption" style={{ display: 'inline' }}>
                   {t`Order number`}
                 </Typography>
                 <Typography style={{ float: 'right' }}>
                   {values.indexOfType}
                 </Typography>
               </div>
-              <Divider className={classes.marginBottom8}/>
+              <Divider className={classes.marginBottom8} />
+              <RecordField
+                label={t`Orderer`}
+                filterProps={this.CLIENT_SEARCH_FILTER_PROPS}
+                primaryKey="fullName"
+                secondaryKey="contacts"
+                onRecordClick={this.handleClientClick}
+                formApi={this.props.formApi}
+                recordType="Individual"
+              >
+                <RecordFetcher id={values.clientId} type="Individual">
+                  {client => 
+                    <Typography variant="subheading">
+                      {client.fullName}
+                    </Typography>
+                  }
+                </RecordFetcher>
+              </RecordField>
               <TextField
                 multiline
                 label={t`Name[object]`}
@@ -207,73 +208,39 @@ class ClientEditor extends React.Component {
                 suffix={t`cm`}
                 constant={locked}
               />
-              <div className={classes.marginBottom16}>
-                <div className={classes.frameFieldHeader}>
-                  <div>
-                    <Typography variant="caption" gutterBottom>
-                      {t`Frame`}
+              <RecordField
+                label={t`Frame`}
+                displayProp="frameName"
+                filterProps={this.FRAME_SEARCH_FILTER_PROPS}
+                primaryKey="name"
+                secondaryKey="vendorCode"
+                onRecordClick={this.handleFrameClick}
+                formApi={this.props.formApi}
+                recordType="Material"
+              />
+              {values.frameId &&
+                <table className={classes.marginBottom8}>
+                  <tbody>
+                    <Typography
+                      variant="caption"
+                      component="tr"
+                      className={classes.tableRow}
+                    >
+                      <td>{t`Vendor code`}</td>
+                      <td>{t`Width`}</td>
+                      <td>{t`Price`}</td>
                     </Typography>
-                    <Typography variant="subheading">
-                      {values.frameName}
+                    <Typography
+                      component="tr"
+                      className={classes.tableRow}
+                    >
+                      <td>{values.frameVendorCode}</td>
+                      <td>{+(values.frameWidth * 100).toFixed(2)} {t`cm`}</td>
+                      <td>{values.framePrice} {t`rub`}</td>
                     </Typography>
-                  </div>
-                  {!locked && !this.state.searchingFrame &&
-                    <IconButton onClick={this.toggleFrameSearch} >
-                      <EditIcon />
-                    </IconButton>
-                  }
-                </div>
-                {this.state.searchingFrame &&
-                  <TextField
-                    helperText={false}
-                    onChange={this.handleFrameSearchTextChange}
-                    prefix={<SearchIcon color="action" />}
-                    suffix={
-                      <IconButton onClick={this.toggleFrameSearch}>
-                        <ClearIcon />
-                      </IconButton>
-                    }
-                  />
-                }
-                {this.state.searchingFrame &&
-                  <Paper className={classes.marginBottom16}>
-                    <RecordList
-                      ListProps={{ style: { height: 200 } }}
-                      primaryKey="name"
-                      secondaryKey="vendorCode"
-                      onRecordClick={this.handleFrameClick}
-                      loadAdditionalRecords={this.loadAdditionalFrames}
-                      filter={this.state.frameSearchFilter}
-                      filterProps={this.frameSearchFilterProps}
-                    />
-                  </Paper>
-                }
-                {values.frameName &&
-                  <table
-                    onClick={this.toggleFrameSearch}
-                  >
-                    <tbody>
-                      <Typography
-                        variant="caption"
-                        component="tr"
-                        className={classes.tableRow}
-                      >
-                        <td>{t`Vendor code`}</td>
-                        <td>{t`Width`}</td>
-                        <td>{t`Price`}</td>
-                      </Typography>
-                      <Typography
-                        component="tr"
-                        className={classes.tableRow}
-                      >
-                        <td>{values.frameVendorCode}</td>
-                        <td>{values.frameWidth * 100} {t`cm`}</td>
-                        <td>{values.framePrice} {t`rub`}</td>
-                      </Typography>
-                    </tbody>
-                  </table>
-                }
-              </div>
+                  </tbody>
+                </table>
+              }
               <TextField
                 label={t`Passepartout width`}
                 field="passepartoutWidth"
@@ -285,6 +252,14 @@ class ClientEditor extends React.Component {
                 <TextField
                   label={t`Passepartout count`}
                   field="passepartoutCount"
+                  constant={locked}
+                  defaultValue={1}
+                />
+              }
+              {Boolean(Number(values.passepartoutWidth)) &&
+                <TextField
+                  label={t`Passepartout vendor code(s)`}
+                  field="passepartoutVendorCode"
                   constant={locked}
                 />
               }
@@ -401,4 +376,4 @@ class ClientEditor extends React.Component {
   }
 }
 
-export default withStyles(styles)(ClientEditor)
+export default withStyles(styles)(OrderEditor)
