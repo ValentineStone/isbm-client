@@ -17,6 +17,13 @@ import cx from '~/utils/cx'
 const dummyFunction = () => {}
 
 class SelectField extends React.Component {
+  componentDidMount() {
+    if (
+      this.fieldApi.value === undefined
+      && this.props.defaultValue !== undefined
+    )
+      this.fieldApi.setValue(this.props.defaultValue)
+  }
   handleChange = e =>
     this.fieldApi.setValue(e.target.value)
   render() {
