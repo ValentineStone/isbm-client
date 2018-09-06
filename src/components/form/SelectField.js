@@ -47,7 +47,7 @@ class SelectField extends React.Component {
       defaultValue,
       pure,
       options,
-      helperText = true,
+      helperText,
       constant,
       ...restProps
     } = this.props
@@ -68,7 +68,7 @@ class SelectField extends React.Component {
             <MenuItem key={value} value={value}>{label}</MenuItem>)
           }
         </Select>
-        {helperText && <FormHelperText>{helperText || ''}</FormHelperText>}
+        <FormHelperText>{helperText}</FormHelperText>
       </FormControl>
     )
   }

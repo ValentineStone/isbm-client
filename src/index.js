@@ -19,24 +19,19 @@ import initializeApp from '~/actions/initializeApp'
 import { importLang } from '~/langs'
 import App from '~/App'
 
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider'
-import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils'
-
 const store = createStore(
   rootReducer,
   applyMiddleware(thunkMiddleware, new LoggerMiddleware(false))
 )
 
 ReactDOM.render(
-  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-    <ReduxProvider store={store}>
-      <BrowserRouter>
-        <RouteProvider>
-          <App />
-        </RouteProvider>
-      </BrowserRouter>
-    </ReduxProvider>
-  </MuiPickersUtilsProvider>,
+  <ReduxProvider store={store}>
+    <BrowserRouter>
+      <RouteProvider>
+        <App />
+      </RouteProvider>
+    </BrowserRouter>
+  </ReduxProvider>,
   document.querySelector('#app')
 )
 

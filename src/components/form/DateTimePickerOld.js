@@ -2,8 +2,7 @@ import React from 'react'
 import { Form, Text, Field } from 'react-form'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
-import NativeDateTimePicker from 'material-ui-pickers/DateTimePicker'
-//import { DateFormatInput as NativeDateTimePicker } from 'material-ui-next-pickers'
+import { DateTimePicker as NativeDateTimePicker } from 'material-ui-pickers'
 import { withStyles } from '@material-ui/core/styles'
 import cx from '~/utils/cx'
 
@@ -22,11 +21,7 @@ function DateTimePicker({
         <NativeDateTimePicker
           className={classes.basic}
           onChange={value => fieldApi.setValue(value)}
-          value={
-            fieldApi.value instanceof Date
-              ? fieldApi.value
-              : new Date(fieldApi.value)
-          }
+          value={fieldApi.value || new Date()}
           {...props}
         />
       }

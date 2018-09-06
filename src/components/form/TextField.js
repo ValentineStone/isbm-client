@@ -44,7 +44,7 @@ class TextField extends React.Component {
       suffix,
       constant,
       scale,
-      helperText = true,
+      helperText,
       ...InputProps
     } = this.props
     const inputComponent = multiline ? Textarea : undefined
@@ -73,23 +73,14 @@ class TextField extends React.Component {
           onChange={this.handleChange}
           onBlur={this.handleBlur}
         />
-        {!(
-          helperText === false
-          || helperText === undefined
-          || helperText === null
-        ) &&
-          <FormHelperText>
-            {fieldApi
-              ? (
-                fieldApi.error
-                || fieldApi.warning
-                || fieldApi.success
-                || ''
-              )
-              : helperText || ''
-            }
-          </FormHelperText>
-        }
+        <FormHelperText>
+          {helperText}
+          {Boolean(fieldApi) && (
+            fieldApi.error
+            || fieldApi.warning
+            || fieldApi.success
+          )}
+        </FormHelperText>
       </FormControl>
     )
   }

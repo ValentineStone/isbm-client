@@ -1,7 +1,7 @@
 import React from 'react'
 import qs from 'qs'
 import displayNameOf from '~/utils/displayNameOf'
-import { withPersistentRoute, withRoute } from '~/context/router'
+import { withPersistentRoute, withRouteContext } from '~/context/router'
 
 /*TODO: optimize rerender, add ability to decide to push or replace href*/
 
@@ -76,7 +76,7 @@ const connectRoute = ({
   ConnectRoute.displayName = `connectRoute(${displayNameOf(Component)})`
   return persistent
     ? withPersistentRoute({ withRouteProps: true })(ConnectRoute)
-    : withRoute()(ConnectRoute)
+    : withRouteContext()(ConnectRoute)
 }
 
 export default connectRoute
