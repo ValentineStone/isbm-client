@@ -19,6 +19,11 @@ import initializeApp from '~/actions/initializeApp'
 import { importLang } from '~/langs'
 import App from '~/App'
 
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import BigCalendar from 'react-big-calendar'
+import moment from 'moment'
+BigCalendar.momentLocalizer(moment)
+
 const store = createStore(
   rootReducer,
   applyMiddleware(thunkMiddleware, new LoggerMiddleware(false))

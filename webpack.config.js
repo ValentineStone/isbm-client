@@ -51,6 +51,10 @@ module.exports = {
           explicitChildren: true,
           charsAsChildren: true
         }
+      },
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
       }
     ]
   },

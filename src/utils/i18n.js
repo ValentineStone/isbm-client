@@ -59,6 +59,7 @@ export default class I18n extends EventEmmiter {
     this.modules = {}
 
     this.t = this.t.bind(this)
+    this.t.i18n = this
     this.getTemplateLiteralTranslation =
       this.getTemplateLiteralTranslation.bind(this)
 

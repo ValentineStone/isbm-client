@@ -15,6 +15,7 @@ import LoginForm from '~/containers/LoginForm'
 import UnknownView from '~/containers/views/UnknownView'
 import DevelopmentView from '~/containers/views/DevelopmentView'
 import ProfileView from '~/containers/views/ProfileView'
+import TasksView from '~/containers/views/TasksView'
 
 import EditorView from '~/containers/views/RecordEditorWithListView'
 import InspectorEditor from '~/containers/editors/InspectorEditor'
@@ -35,6 +36,7 @@ function clientTransform(record) {
   record.displayName = displayName.join(' ')
   return record
 }
+
 function taskTransform(record) {
   record.dueDate = new Date(record.dueDate).toLocaleString()
   return record
@@ -105,7 +107,10 @@ let App = class App extends React.PureComponent {
                   filterProps={orderFilterProps}
                 />
               </Route>
-              <Route path="/tasks">
+              <Route path="/tasks" component={TasksView}
+              >
+                {
+                /*
                 <EditorView
                   recordType="Task"
                   primaryRecordProp="summary"
@@ -113,6 +118,8 @@ let App = class App extends React.PureComponent {
                   Editor={TaskEditor}
                   recordTransform={taskTransform}
                 />
+                */
+                }
               </Route>
               <Route path="/" exact>
                 <Redirect to="orders" />
